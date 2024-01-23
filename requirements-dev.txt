@@ -4,6 +4,8 @@ grpcio-tools
 awscli
 aws-sam-cli
 redis
+torch
+torchvision
 #nlp workload
 #tiktoken
 #datasets

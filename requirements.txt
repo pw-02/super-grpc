@@ -1,9 +1,6 @@
 boto3
 grpcio
 grpcio-tools
-awscli
-aws-sam-cli
-redis
 #nlp workload
 #tiktoken
 #datasets

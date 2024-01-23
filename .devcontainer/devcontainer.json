@@ -22,7 +22,7 @@
             "ms-python.vscode-pylance",
             "mutantdino.resourcemonitor",
             "redhat.vscode-yaml",
-            "kangping.protobuf",
+            "kangping.protobuf"
             // "amazonwebservices.aws-toolkit-vscode",
             // "tamasfe.even-better-toml"
           ]

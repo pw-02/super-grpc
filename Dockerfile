@@ -30,9 +30,9 @@ WORKDIR /workspaces/super-grpc
 
 # Install Python dependencies
 # Install Python dependencies
-COPY requirements-dev.txt /tmp/
-RUN /venv/bin/pip install --no-cache-dir -r /tmp/requirements-dev.txt \
-    && rm /tmp/requirements-dev.txt
+COPY dev-requirements.txt /tmp/
+RUN /venv/bin/pip install --no-cache-dir -r /tmp/dev-requirements.txt \
+    && rm /tmp/dev-requirements.txt
 
 
 # Set PYTHONPATH
