@@ -1,8 +1,8 @@
 import grpc
 import os
 import json
-from proto import cache_coordinator_pb2 as cache_coordinator_pb2
-from proto import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
+import cache_coordinator_pb2 as cache_coordinator_pb2
+import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 
 class SuperClient:
     def __init__(self, server_address='localhost:50051'):
@@ -79,12 +79,6 @@ class SuperClient:
         # Make the gRPC call
         response = self.stub.ShareJobMetrics(job_metrics)
         pass
-
-
-
-
-
-
 
 
 def run_client():
