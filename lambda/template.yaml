@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lambda
+  Sample SAM Template for lambda
+
+Globals:
+  Function:
+    Timeout: 50
+    MemorySize: 5000
+  Api:
+    BinaryMediaTypes:
+      - image/png
+      - image/jpg
+      - image/jpeg
+Resources:
+  CreateBatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        CreateBatch:
+          Type: Api
+          Properties:
+            Path: /create_batch
+            Method: post
+      Role: arn:aws:iam::590178426343:role/SIONLambdaRole
+      VpcConfig:  # Add VPC configuration here
+        SecurityGroupIds:
+          - sg-01e32e335c30cea50  # Replace with your security group ID
+        SubnetIds:
+          - subnet-034013d4223c8fd5b  # Replace with your subnet ID
+          - subnet-0a7a885bb0a98f999  # Replace with your subnet ID
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./batch_creation
+      DockerTag: python3.9-v1
+      
+Outputs:
+  CreateBatchApi:
+    Description: "API Gateway endpoint URL for Prod stage for CreateBatch function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/create_batch/"
+  # CreateBatchFunction:
+  #   Description: "CreateBatch Lambda Function ARN"
+  #   Value: !GetAtt CreateBatchFunction.Arn
+  # CreateBatchFunctionIamRole:
+  #   Description: "IAM Role created for CreateBatch function"
+  #   Value: !GetAtt CreateBatchFunctionRole.Arn

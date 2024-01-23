@@ -1,0 +1,3 @@
+sam local invoke CreateBatchFunction --event events/event.json
+sam build
+sam local start-api

@@ -1,0 +1,12 @@
+boto3
+grpcio
+grpcio-tools
+awscli
+aws-sam-cli
+redis
+#nlp workload
+#tiktoken
+#datasets
+#wandb
+#transformers
+#export PYTHONPATH=/workspaces/super-dl

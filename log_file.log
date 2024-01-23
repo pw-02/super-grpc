@@ -1,0 +1,6 @@
+2024-01-23 00:27:26,215 - ERROR - Error in serve(): [Errno 2] No such file or directory: 'superdl/syncgrpc/config.yaml'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/server/server.py", line 61, in serve
+    with open('superdl/syncgrpc/config.yaml', 'r') as file:
+FileNotFoundError: [Errno 2] No such file or directory: 'superdl/syncgrpc/config.yaml'
+2024-01-23 00:28:39,152 - INFO - Server started. Listening on port 50051...

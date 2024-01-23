@@ -1,0 +1,39 @@
+# More information about the configuration file can be found here:
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+version = 0.1
+
+[default]
+[default.global.parameters]
+stack_name = "superlambda"
+aws_region = "us-west-2"
+confirm_changeset = true
+allow_sam_cli_role_creation = true
+disable_rollback = true
+createbatchfunction_authentication = true
+save_arguments = false
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.validate.parameters]
+lint = true
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"  # Add CAPABILITY_NAMED_IAM here
+confirm_changeset = true
+resolve_s3 = true
+
+[default.package.parameters]
+resolve_s3 = true
+
+[default.sync.parameters]
+watch = true
+
+[default.local_start_api.parameters]
+#warm_containers = "EAGER"
+warm_containers = "LAZY"
+
+[default.local_start_lambda.parameters]
+#warm_containers = "EAGER"
+warm_containers = "LAZY"
