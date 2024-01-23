@@ -1,8 +1,8 @@
 import grpc
 import os
 import json
-from super_grpc_service.syncgrpc.protos import cache_coordinator_pb2 as cache_coordinator_pb2
-from super_grpc_service.syncgrpc.protos import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
+from proto import cache_coordinator_pb2 as cache_coordinator_pb2
+from proto import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 
 class SuperClient:
     def __init__(self, server_address='localhost:50051'):

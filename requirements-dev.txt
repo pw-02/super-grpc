@@ -6,6 +6,7 @@ aws-sam-cli
 redis
 torch
 torchvision
+twine
 #nlp workload
 #tiktoken
 #datasets

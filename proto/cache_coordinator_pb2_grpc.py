@@ -3,7 +3,7 @@
 import grpc
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from protos import cache_coordinator_pb2 as superdl_dot_syncgrpc_dot_protos_dot_cache__coordinator__pb2
+from proto import cache_coordinator_pb2 as superdl_dot_syncgrpc_dot_protos_dot_cache__coordinator__pb2
 
 
 class CacheCoordinatorServiceStub(object):

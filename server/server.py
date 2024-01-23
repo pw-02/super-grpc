@@ -1,9 +1,7 @@
 import grpc
 from concurrent import futures
-import sys
-print(sys.path)
-from protos import cache_coordinator_pb2 as cache_coordinator_pb2
-from protos import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
+import proto.cache_coordinator_pb2 as cache_coordinator_pb2
+import proto.cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 
 import google.protobuf.empty_pb2
 from logger_config import logger
