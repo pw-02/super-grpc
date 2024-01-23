@@ -1,6 +1,7 @@
 boto3
 grpcio
 grpcio-tools
+awscli
 #nlp workload
 #tiktoken
 #datasets

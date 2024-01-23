@@ -1,7 +1,9 @@
 # Build: sudo docker build -t <project_name> .
 # Run: sudo docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 
-FROM python:3.10
+# Use Alpine Linux as the base image
+FROM ubuntu:22.04
+
 ENV PATH /opt/conda/bin:$PATH
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/conda/lib"
@@ -22,7 +24,7 @@ RUN apt update \
                    ca-certificates \
                    wget \
                    #redis-server \ 
-    && rm -rf /var/lib/apt/lists
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Miniconda and create main env
 ADD https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh miniconda3.sh
@@ -40,5 +42,10 @@ RUN pip install --no-cache-dir -r /tmp/requirements-dev.txt \
 
 # Set PYTHONPATH
 ENV PYTHONPATH=/workspaces/super-grpc
+EXPOSE 50051
+
+# Cleanup
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 CMD ["/bin/bash"]
