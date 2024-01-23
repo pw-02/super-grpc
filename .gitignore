@@ -1,4 +1,3 @@
-dict/
-super_grpc_client.egg-info/
+supergrpcclient.egg-info/
 tests/
 useful.txt
