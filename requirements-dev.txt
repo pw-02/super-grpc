@@ -7,6 +7,7 @@ redis
 torch
 torchvision
 twine
+build
 #nlp workload
 #tiktoken
 #datasets

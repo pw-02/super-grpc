@@ -2,3 +2,4 @@ supergrpcclient.egg-info/
 tests/
 useful.txt
 log_file.log
+client/src/super_client.egg-info/
