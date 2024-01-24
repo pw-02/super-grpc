@@ -2,6 +2,6 @@
 
 lambda_function_name: 'superlambda-CreateBatchFunction-FHh7VhqBhB0v'
 s3_bucket_name: sdl-cifar10
-testing_locally: True
+testing_locally: False
 sam_local_url: 'http://localhost:3000'
 sam_local_endpoint: '/create_batch'
