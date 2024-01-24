@@ -75,7 +75,7 @@ def serve():
         # Start the gRPC server
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         cache_coordinator_pb2_grpc.add_CacheCoordinatorServiceServicer_to_server(cache_service, server)
-        server.add_insecure_port('0.0.0.0::50051')
+        server.add_insecure_port('[::]:50051')
         server.start()
         logger.info("Server started. Listening on port 50051...")
 
