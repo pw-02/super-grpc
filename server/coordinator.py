@@ -48,7 +48,7 @@ class Coordinator:
 
         # Initialize thread pool executors
         self.pre_process_executor = futures.ThreadPoolExecutor(max_workers=1)
-        self.processing_executor =  futures.ThreadPoolExecutor(max_workers=1) #this must always be at least 2
+        self.processing_executor =  futures.ThreadPoolExecutor(max_workers=5) #this must always be at least 2
         self.post_processing_executor =  futures.ThreadPoolExecutor(max_workers=1)
         self.dequeuing_stop_event = threading.Event()
         self.lock = threading.Lock()  # Added lock for thread safety
