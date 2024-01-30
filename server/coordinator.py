@@ -48,7 +48,7 @@ class Coordinator:
 
         # Initialize thread pool executors
         self.pre_process_executor = futures.ThreadPoolExecutor(max_workers=1)
-        self.processing_executor =  futures.ThreadPoolExecutor(max_workers=5) #this must always be at least 2
+        self.processing_executor =  futures.ThreadPoolExecutor(max_workers=7) #this must always be at least 2
         self.post_processing_executor =  futures.ThreadPoolExecutor(max_workers=1)
         self.dequeuing_stop_event = threading.Event()
         self.lock = threading.Lock()  # Added lock for thread safety
@@ -140,7 +140,7 @@ class Coordinator:
                 except QueueEmpty:
                     # Handle the case when the queue is empty
                     #logger.info("Batch Processor Sleeping for 0.1s - Queue Empty")
-                    time.sleep(0.1)
+                    time.sleep(0.01)
                     continue  # Continue to the next iteration
 
                 job_id, dataset_id, batch_id = item

@@ -4,6 +4,8 @@
 # Use Alpine Linux as the base image
 FROM ubuntu:22.04
 
+ENV PYTHON_VERSION=3.10
+
 ENV PATH /opt/conda/bin:$PATH
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/conda/lib"

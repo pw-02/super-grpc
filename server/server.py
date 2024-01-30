@@ -16,7 +16,7 @@ class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorService
     
     def GetBatchStatus(self, request, context):
         cached_or_inprogress, message = self.coordinator.get_batch_status(request.batch_id,request.dataset_id)
-        logger.info(f"{message}")
+        #logger.info(f"{message}")
         return cache_coordinator_pb2.GetBatchStatusResponse(batch_cached_or_in_progress=cached_or_inprogress, message = message)
 
 
