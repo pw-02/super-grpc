@@ -29,19 +29,20 @@ class S3Url(object):
 
 
 class Dataset():
-    def __init__(self, dataset_id, source_system, data_dir, labelled_samples):
+    def __init__(self, dataset_id, data_dir, transformations, labelled_samples):
         self.dataset_id = dataset_id
-        self.img_extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
-        self.source_system = source_system
         self.data_dir = data_dir
-
-        if labelled_samples is not None:
-             self.samples = json.loads(labelled_samples)
-        else:     
-            if source_system =='local':
-                self.samples =self._classify_samples_local(data_dir)
-            elif source_system == 's3':
-                self.samples =self._classify_samples_s3(S3Url(data_dir))
+        self.use_s3 = self.data_dir.startswith("s3://")
+        self.img_extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
+        self.transformations = transformations
+        # if labelled_samples is not None:
+        #      self.samples = json.loads(labelled_samples)
+        
+        if self.use_s3:
+            self.bucket_name = S3Url(data_dir).bucket
+            self.samples: Dict[str, List[str]] = self._classify_samples_s3(S3Url(data_dir))
+        else:
+            self.samples: Dict[str, List[str]] = self._classify_samples_local(data_dir)
 
         self.batches: Dict[int, Batch] = {}  # Dictionary to store batch information        
     
@@ -78,7 +79,6 @@ class Dataset():
         else:
             for dirpath, dirnames, filenames in os.walk(data_dir):
                 for filename in filter(self.is_image_file, filenames):
-                    
                     img_class = os.path.basename(dirpath.removesuffix('/'))
                     img_path = os.path.join(dirpath, filename)
                     img_classes.setdefault(img_class, []).append(img_path)
@@ -111,9 +111,9 @@ class Dataset():
 
             return blob_classes
         except Exception as e:
-                # Handle exceptions, e.g., log them
-                print(f"Error in _classify_blobs_s3: {e}")
-                return None
+            # Handle exceptions, e.g., log them
+            print(f"Error in _classify_blobs_s3: {e}")
+            return None
 
     def _create_index_file_s3(self, s3url: S3Url) -> Dict[str, List[str]]:
         import json
@@ -146,3 +146,4 @@ class Dataset():
         index_object.put(Body=(bytes(json.dumps(blob_classes, indent=4).encode('UTF-8'))))
 
         return blob_classes
+    

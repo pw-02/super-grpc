@@ -7,7 +7,8 @@ import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 class SuperClient:
     def __init__(self, server_address='localhost:50051'):
         self.stub = self.create_client(server_address)
-        self.job_id = None
+        #self.job_id = job_id
+
 
     def create_client(self, server_address):
         # Create a gRPC channel
@@ -16,12 +17,25 @@ class SuperClient:
         # Create a gRPC stub
         return cache_coordinator_pb2_grpc.CacheCoordinatorServiceStub(channel)
     
+    def ping_server(self):
+        job_info = cache_coordinator_pb2.GetPingServerRequest(message='ping')
+        try:
+            response = self.stub.PingServer(job_info)
+            if response.message == 'pong':
+                return True, ''
+            else:
+                return False, 'Unexpected response from server'
+        except Exception as e:
+            return False, str(e)
+
+
     def register_new_job(self, job_id, job_dataset_ids):
         job_info = cache_coordinator_pb2.RegisterJobInfo(job_id=job_id, dataset_ids=job_dataset_ids)
         response = self.stub.RegisterJob(job_info)  
         if response.job_registered:
+            pass
             # logger.info(f"Registered Job with Id: '{job_id}'")
-            self.job_id = job_id
+            #self.job_id = job_id
         else:
             pass
             #  logger.info(f"Failed to Register Job with Id: '{job_id}'. Server Message: '{response.message}'.")
@@ -32,11 +46,11 @@ class SuperClient:
         return  response.batch_cached_or_in_progress
       
 
-    def register_dataset(self, dataset_id, data_dir, source_system, labelled_samples):
+    def register_dataset(self, dataset_id, data_dir, transformations, labelled_samples):
         dataset_info = cache_coordinator_pb2.RegisterDatasetInfo(
             dataset_id=dataset_id,
             data_dir=data_dir,
-            source_system=source_system,
+            transformations = transformations,
             labelled_samples = json.dumps(labelled_samples))
         
         try:
@@ -67,12 +81,12 @@ class SuperClient:
         response = self.stub.ShareBatchAccessPattern(batch_access_pattern_list)
         pass
 
-    def share_job_metrics(self, dataset_id, metrics:dict):
+    def share_job_metrics(self,job_id, dataset_id, metrics:dict):
         if self.stub is None:
             raise RuntimeError("Client not initialized. Call create_client() first.")
         
         job_metrics = cache_coordinator_pb2.JobMetricsInfo(
-        job_id=self.job_id,
+        job_id=job_id,
         dataset_id = dataset_id,
         metrics = json.dumps(metrics))
 

@@ -12,7 +12,7 @@ class Batch:
         self.lock = threading.Lock()
         self.predicted_access_times: dict = {}
         self.actual_access_times: dict = {}
-
+        
     def set_caching_in_progress(self, in_progress: bool = False):
         with self.lock:
             self.caching_in_progress = in_progress

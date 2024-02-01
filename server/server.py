@@ -12,7 +12,10 @@ import yaml
 class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorServiceServicer):
     def __init__(self, coordinator: Coordinator):
         self.coordinator = coordinator
-
+    
+    def PingServer(self, request, context):
+        message = request.message
+        return cache_coordinator_pb2.GetPingServerResponse(message = 'pong')
     
     def GetBatchStatus(self, request, context):
         cached_or_inprogress, message = self.coordinator.get_batch_status(request.batch_id,request.dataset_id)
@@ -27,8 +30,8 @@ class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorService
     
     def RegisterDataset(self, request, context):
         dataset_added, message = self.coordinator.add_new_dataset(request.dataset_id,
-                                                                  request.source_system,
-                                                                    data_dir=request.data_dir, 
+                                                                    data_dir=request.data_dir,
+                                                                    transformations =None if request.transformations == 'null' else request.transformations,
                                                                     labelled_samples= None if request.labelled_samples == 'null' else request.labelled_samples)
         logger.info(f"{message}")
         return cache_coordinator_pb2.RegisterDatasetResponse(dataset_registered=dataset_added, message = message)
@@ -62,10 +65,12 @@ def serve():
         # Create an instance of the Coordinator class
         coordinator = Coordinator(
             lambda_function_name=config_data["lambda_function_name"],
-            s3_bucket_name = config_data["s3_bucket_name"],
             testing_locally = config_data["testing_locally"],
             sam_local_url = config_data["sam_local_url"],
-            sam_local_endpoint = config_data["sam_local_endpoint"]
+            sam_local_endpoint = config_data["sam_local_endpoint"],
+            pre_process_workers=config_data["pre_process_workers"],
+            processing_workers=config_data["processing_workers"],
+            post_processing_workers=config_data["post_processing_workers"],
             )
         # Stop the batch processing  workers
         coordinator.start_workers()

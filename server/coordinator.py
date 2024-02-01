@@ -11,6 +11,7 @@ import boto3
 import json
 from concurrent import futures
 from logger_config import logger
+from example_lambda import lambda_handler
 
 DEV_MODE = True
 
@@ -28,12 +29,11 @@ def format_timestamp(current_timestamp, use_utc=True):
 class Coordinator:
 
 
-    def __init__(self, lambda_function_name, s3_bucket_name,testing_locally,sam_local_url,sam_local_endpoint  ):
+    def __init__(self, lambda_function_name,testing_locally,sam_local_url,sam_local_endpoint, pre_process_workers, processing_workers, post_processing_workers  ):
         self.registered_jobs: Dict[int, Job] = {}  # Dictionary to store job information
         self.registered_datasets: Dict[int, Dataset] = {}
 
         self.batch_pqueue = PriorityQueue()  # Priority queue for batch processing using heapq
-        self.s3_bucket_name = s3_bucket_name
         self.testing_locally = testing_locally
         self.sam_local_url = sam_local_url
         self.sam_local_endpoint = sam_local_endpoint
@@ -47,9 +47,9 @@ class Coordinator:
                 logger.error(f"Error initializing Lambda client: {e}")
 
         # Initialize thread pool executors
-        self.pre_process_executor = futures.ThreadPoolExecutor(max_workers=1)
-        self.processing_executor =  futures.ThreadPoolExecutor(max_workers=7) #this must always be at least 2
-        self.post_processing_executor =  futures.ThreadPoolExecutor(max_workers=1)
+        self.pre_process_executor = futures.ThreadPoolExecutor(max_workers=pre_process_workers)
+        self.processing_executor =  futures.ThreadPoolExecutor(max_workers=processing_workers) #this must always be at least 2
+        self.post_processing_executor =  futures.ThreadPoolExecutor(max_workers=post_processing_workers)
         self.dequeuing_stop_event = threading.Event()
         self.lock = threading.Lock()  # Added lock for thread safety
         
@@ -78,18 +78,18 @@ class Coordinator:
             return False,  message
     
     
-    def add_new_dataset(self, dataset_id, source_system, data_dir, labelled_samples):
+    def add_new_dataset(self, dataset_id, data_dir, transformations, labelled_samples):
         try:
             if dataset_id in self.registered_datasets:
                 return True, f"Skipped Dataset '{dataset_id}' Registration. Already Registered"
             else:
-                dataset = Dataset(dataset_id, source_system, data_dir, labelled_samples)
+                dataset = Dataset(dataset_id, data_dir, transformations, labelled_samples)
                 if len(dataset) > 1:
                     with self.lock:  # Use lock to ensure thread safety
                         self.registered_datasets[dataset_id] = dataset
-                    return True, f"New Dataset Registered. Dataset Id: '{dataset_id}'"
+                    return True, f"New Dataset Registered. Dataset Id: '{dataset_id}', Data Dir: {data_dir}"
                 else:
-                    message = f"No data found for dataset '{data_dir}' in '{source_system}'"
+                    message = f"No data found for dataset '{data_dir}'"
                     return False,  message   
         except Exception as e:
             message = f"Error in add_new_dataset: {e}"
@@ -173,11 +173,14 @@ class Coordinator:
                 action = "Skipped"
                 logger.info(f"Processed batch '{batch_id}'. Action Taken: '{action}', Message: 'Batch already cached or actively being cached by another process'")
                 return
-
+            bucket_name = self.registered_datasets[dataset_id].bucket_name
+            transformations = self.registered_datasets[dataset_id].transformations
             samples = self.registered_datasets[dataset_id].get_samples_for_batch(batch.batch_sample_indices)
             batch.set_caching_in_progress(True)
 
-            successfully_cached, error_message = self.prefetch_batch( batch_id, samples, check_cache_first=not (action == "Cached Batch"))
+            successfully_cached, error_message = self.prefetch_batch(bucket_name, batch_id, samples,
+                                                                       transformations,
+                                                                      check_cache_first=not (action == "Cached Batch"))
 
             if successfully_cached:
                 batch.set_cached_status(is_cached=True)
@@ -192,27 +195,34 @@ class Coordinator:
 
     
 
-    def prefetch_batch(self, batch_id, labelled_samples, check_cache_first):
+    def prefetch_batch(self, bucket_name, batch_id, labelled_samples, transformations, check_cache_first):
         try:
-
             event_data = {
-                'bucket_name': self.s3_bucket_name,
+                'bucket_name': bucket_name,
                 'batch_id': batch_id,
-                'batch_metadata': labelled_samples,  # Replace with actual batch metadata
-            }
-
+                'batch_metadata': labelled_samples,
+                }
+            if transformations is not None:
+                event_data['transformations'] = transformations
+            
             if self.testing_locally:
-                response = requests.post(f"{self.sam_local_url}{self.sam_local_endpoint}", json=event_data)
+                #response = requests.post(f"{self.sam_local_url}{self.sam_local_endpoint}", json=event_data)
+                response = lambda_handler(event=event_data, context=None)
             else:
                 response =  self.lambda_client.invoke(FunctionName=self.lambda_function_name,
                                                      #InvocationType='Event',  # Change this based on your requirements
                                                      Payload=json.dumps(event_data)  # Pass the required payload or input parameters
                                                      )
-            # Check the response status code
-            if response['StatusCode'] == 200:
-                return True, f"Sucessfully cached batch: {batch_id}"
-            else:
-                return False, f"Error invoking function. Status code: {response.status_code}"
+            return response['is_cached'], response['message']
+
+            # # Check the response status code
+            # if response['StatusCode'] == 200:
+            #     return response[''], response['batch_id'], response['']
+            #     return True, f"Sucessfully cached batch: {batch_id}"
+            # elif response['StatusCode'] == 11:
+            #     return False, f"Sucessfully cached batch: {batch_id}"
+            # else:
+            #     return False, f"Error invoking function. Status code: {response.status_code}"
             
         except Exception as e:
             return False, f"Exception invoking function.{e}"

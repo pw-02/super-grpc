@@ -3,3 +3,5 @@ tests/
 useful.txt
 log_file.log
 client/src/super_client.egg-info/
+client/dist/
+client/src/super_client.egg-info/PKG-INFO
