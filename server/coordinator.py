@@ -11,7 +11,7 @@ import boto3
 import json
 from concurrent import futures
 from logger_config import logger
-from example_lambda import lambda_handler
+#from ..awslambnds import lambda_handler
 
 DEV_MODE = True
 
@@ -45,6 +45,10 @@ class Coordinator:
                 #add a function call in here to wake up the lambda
             except Exception as e:
                 logger.error(f"Error initializing Lambda client: {e}")
+        else:
+            from awslambda.batch_creation.app import lambda_handler
+            self.lambda_handler = lambda_handler
+
 
         # Initialize thread pool executors
         self.pre_process_executor = futures.ThreadPoolExecutor(max_workers=pre_process_workers)
@@ -54,6 +58,13 @@ class Coordinator:
         self.lock = threading.Lock()  # Added lock for thread safety
         
     def get_batch_status(self, batch_id, dataset_id):
+
+        if dataset_id not in self.registered_datasets:
+            return False,  'dataset not found in super'
+
+        if batch_id not in self.registered_datasets[dataset_id].batches:
+             return False,  'batch not found in super'
+
         batch = self.registered_datasets[dataset_id].batches[batch_id]
         
         if batch.is_cached or batch.caching_in_progress:
@@ -191,12 +202,12 @@ class Coordinator:
             batch.set_caching_in_progress(False)
 
         except Exception as e:
-            logger.error(f"Error in process_batch: {e}")
+            logger.error(f"Error in process_batch: {str(e)}")
 
     
 
     def prefetch_batch(self, bucket_name, batch_id, labelled_samples, transformations, check_cache_first):
-        try:
+        #try:
             event_data = {
                 'bucket_name': bucket_name,
                 'batch_id': batch_id,
@@ -207,13 +218,14 @@ class Coordinator:
             
             if self.testing_locally:
                 #response = requests.post(f"{self.sam_local_url}{self.sam_local_endpoint}", json=event_data)
-                response = lambda_handler(event=event_data, context=None)
+                response = self.lambda_handler(event=event_data, context=None)
             else:
                 response =  self.lambda_client.invoke(FunctionName=self.lambda_function_name,
                                                      #InvocationType='Event',  # Change this based on your requirements
                                                      Payload=json.dumps(event_data)  # Pass the required payload or input parameters
                                                      )
-            return response['is_cached'], response['message']
+            response_payload = json.loads(response['Payload'].read().decode('utf-8'))
+            return response_payload['is_cached'], response_payload['message']
 
             # # Check the response status code
             # if response['StatusCode'] == 200:
@@ -224,8 +236,8 @@ class Coordinator:
             # else:
             #     return False, f"Error invoking function. Status code: {response.status_code}"
             
-        except Exception as e:
-            return False, f"Exception invoking function.{e}"
+        # except Exception as e:
+        #     return False, f"Exception invoking function.{e}"
         
 
     def process_job_metrics(self, job_id, dataset_id, metrics):
@@ -266,4 +278,24 @@ class Coordinator:
 
         except Exception as e:
             logger.error(f"Error in process_training_metrics: {e}")
+    
+    def warm_up_function(self):
+       
+       event_data = {
+                'bucket_name': 'foo',
+                'batch_id': 1223,
+                'batch_metadata': 'foo',
+                }
+
+       response =  self.lambda_client.invoke(FunctionName=self.lambda_function_name,
+                                                     #InvocationType='Event',  # Change this based on your requirements
+                                                     Payload=json.dumps(event_data))  # Pass the required payload or input parameters
+       if response['StatusCode'] == 200:
+           return True
+       else:
+           return False
+            
+        
+
+
 

@@ -15,7 +15,7 @@ import os
 #REDIS_PORT = 6379
 
 REDIS_HOST =  "10.0.31.114"
-REDIS_HOST =  "ec2-35-89-150-133.us-west-2.compute.amazonaws.com"
+# REDIS_HOST =  "ec2-34-217-48-32.us-west-2.compute.amazonaws.com"
 
 REDIS_PORT = 6378
 
@@ -40,11 +40,10 @@ def download_file(bucket_name, file_path):
 
 def process_file(content, transformations):
     image = Image.open(BytesIO(content))
-    # Apply transformations if specified
-
+    
     if image.mode == "L":
         image = image.convert("RGB")
-
+    # Apply transformations if specified
     if transformations is not None:
         processed_tensor = transformations(image)
     else:
@@ -60,7 +59,7 @@ def download_and_process_file(bucket_name, sample, transformations):
     return processed_tensor, sample_label
 
 def create_torch_batch(bucket_name, batch_metadata, transformations):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = {executor.submit(download_and_process_file, bucket_name, sample, transformations): sample for sample in batch_metadata}
         sample_list = []
         label_list = []
@@ -103,6 +102,9 @@ def lambda_handler(event, context):
         batch_id = event['batch_id']
         use_compression = True
 
+        if bucket_name == 'foo':
+            return {'statusCode': 200,'message': 'function_warmed'}
+
         if 'transformations' in event:
             transformations= dict_to_torchvision_transform(json.loads(event['transformations']))
         else:
@@ -122,12 +124,12 @@ def lambda_handler(event, context):
         # Encode with base64
         serialized_tensor_batch = base64.b64encode(serialized_tensor_batch).decode('utf-8')
 
-        # cache_batch in redis using batch_id
+      # cache_batch in redis using batch_id
         is_cached = False
         try:
             redis_client.set(batch_id, serialized_tensor_batch)
             is_cached = True
-            message = f'Batch: {batch_id} cached'        
+            message = f''        
         except Exception as e:
             is_cached = False
             message = f"Failed to cache batch '{batch_id}' Error: {str(e)})"

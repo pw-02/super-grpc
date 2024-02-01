@@ -35,14 +35,19 @@ class Dataset():
         self.use_s3 = self.data_dir.startswith("s3://")
         self.img_extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
         self.transformations = transformations
-        # if labelled_samples is not None:
-        #      self.samples = json.loads(labelled_samples)
         
+    
         if self.use_s3:
             self.bucket_name = S3Url(data_dir).bucket
-            self.samples: Dict[str, List[str]] = self._classify_samples_s3(S3Url(data_dir))
+            if labelled_samples is not None:
+                self.samples = json.loads(labelled_samples)
+            else:
+                self.samples: Dict[str, List[str]] = self._classify_samples_s3(S3Url(data_dir))
         else:
-            self.samples: Dict[str, List[str]] = self._classify_samples_local(data_dir)
+            if labelled_samples is not None:
+                self.samples = json.loads(labelled_samples)
+            else:
+                self.samples: Dict[str, List[str]] = self._classify_samples_local(data_dir)
 
         self.batches: Dict[int, Batch] = {}  # Dictionary to store batch information        
     

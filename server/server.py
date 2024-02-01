@@ -58,6 +58,8 @@ class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorService
 
 def serve():
     try:
+        logger.info("Starting sever..")
+
         #sever configuarion
         with open('config.yaml', 'r') as file:
             config_data = yaml.safe_load(file)
@@ -72,13 +74,24 @@ def serve():
             processing_workers=config_data["processing_workers"],
             post_processing_workers=config_data["post_processing_workers"],
             )
+        
+        if not config_data["testing_locally"]:
+            logger.info("Warming up batch creation lambda..")
+            function_working = coordinator.warm_up_function()
+            if not function_working:
+                import sys
+                logger.error(f"Unable to invoke lambda function '{coordinator.lambda_function_name}'. Shutting down!")
+                sys.exit()
+        
+        logger.info("Starting workers..")
+
         # Stop the batch processing  workers
         coordinator.start_workers()
         # Initialize the CacheCoordinatorService with the Coordinator instance
         cache_service = CacheCoordinatorService(coordinator)
 
         # Start the gRPC server
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=20))
         cache_coordinator_pb2_grpc.add_CacheCoordinatorServiceServicer_to_server(cache_service, server)
         server.add_insecure_port('[::]:50051')
         server.start()

@@ -6,16 +6,31 @@ import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 
 class SuperClient:
     def __init__(self, server_address='localhost:50051'):
-        self.stub = self.create_client(server_address)
+        self.server_address = server_address
+        self.channel = grpc.insecure_channel(server_address)
+        self.stub = self.create_client()
+
         #self.job_id = job_id
 
-
-    def create_client(self, server_address):
-        # Create a gRPC channel
-        channel = grpc.insecure_channel(server_address)
-
+    def create_client(self):
         # Create a gRPC stub
-        return cache_coordinator_pb2_grpc.CacheCoordinatorServiceStub(channel)
+        return cache_coordinator_pb2_grpc.CacheCoordinatorServiceStub(self.channel)
+    
+    def close_channel(self):
+        # Close the gRPC channel and release resources
+        if self.channel is not None:
+            self.channel.close()
+
+
+    def __enter__(self):
+        # Create a gRPC stub when entering the context
+        self.stub = self.create_client()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        # Close the gRPC channel when exiting the context
+        self.close_channel()
+
     
     def ping_server(self):
         job_info = cache_coordinator_pb2.GetPingServerRequest(message='ping')
@@ -41,10 +56,14 @@ class SuperClient:
             #  logger.info(f"Failed to Register Job with Id: '{job_id}'. Server Message: '{response.message}'.")
     
     def get_batch_status(self, batch_id, dataset_id):
-        info = cache_coordinator_pb2.GetBatchStatusRequest(batch_id=batch_id, dataset_id=dataset_id)
-        response = self.stub.GetBatchStatus(info)
-        return  response.batch_cached_or_in_progress
-      
+            try:
+                info = cache_coordinator_pb2.GetBatchStatusRequest(batch_id=batch_id, dataset_id=dataset_id)
+                response = self.stub.GetBatchStatus(info)
+                return response.batch_cached_or_in_progress
+            except Exception as e:
+                return False
+
+          
 
     def register_dataset(self, dataset_id, data_dir, transformations, labelled_samples):
         dataset_info = cache_coordinator_pb2.RegisterDatasetInfo(
