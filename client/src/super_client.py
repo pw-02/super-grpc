@@ -7,30 +7,10 @@ import cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 class SuperClient:
     def __init__(self, server_address='localhost:50051'):
         self.server_address = server_address
+        # Establish a connection to the gRPC server
         self.channel = grpc.insecure_channel(server_address)
-        self.stub = self.create_client()
-
-        #self.job_id = job_id
-
-    def create_client(self):
-        # Create a gRPC stub
-        return cache_coordinator_pb2_grpc.CacheCoordinatorServiceStub(self.channel)
-    
-    def close_channel(self):
-        # Close the gRPC channel and release resources
-        if self.channel is not None:
-            self.channel.close()
-
-
-    def __enter__(self):
-        # Create a gRPC stub when entering the context
-        self.stub = self.create_client()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        # Close the gRPC channel when exiting the context
-        self.close_channel()
-
+        # Create a stub (client)
+        self.stub = cache_coordinator_pb2_grpc.CacheCoordinatorServiceStub(self.channel)
     
     def ping_server(self):
         job_info = cache_coordinator_pb2.GetPingServerRequest(message='ping')
@@ -113,17 +93,53 @@ class SuperClient:
         response = self.stub.ShareJobMetrics(job_metrics)
         pass
 
+    def __del__(self):
+        # Close the gRPC channel when the client is deleted
+        self.channel.close()
 
-def run_client():
-    # Create a gRPC client
-    client = SuperClient()
-    client.create_client('localhost:50051')
+import multiprocessing
+import time
+def worker(process_id, server_address):
+    # Each worker creates its own instance of CacheCoordinatorClient
+    client = SuperClient(server_address)
+    while True:     
+        # Example: Call GetBatchStatus RPC
+        response = client.get_batch_status(process_id, 'example_dataset')
+        print(f"Process {process_id}: GetBatchStatus Response - {response}")
+        time.sleep(2)
 
-    job_id = os.getpid()
+    # Close the gRPC channel when the worker is done
+    #del client
 
-       # Use client to send batch access pattern
-    batch_list = [(1,[1, 2, 3]), (2,[4, 5, 6]), (3,[7, 8, 9])]
-    client.share_batch_access_pattern(job_id, batch_list, 'val')
+
+
+def run():
+     # Example of using the CacheCoordinatorClient with multiple processes
+    server_address = 'localhost:50051'
+    num_processes = 4
+
+    # Create a list to hold the process objects
+    processes = []
+
+    # Create a super client for the main process
+    main_client  = SuperClient(server_address)
+    # Example: Call additional RPC with the super client
+    
+    response = main_client.get_batch_status(123, 'example_dataset')
+    print(f"Process Main: GetBatchStatus Response - {response}")
+    
+    # Fork child processes
+    for i in range(0, num_processes):
+        process = multiprocessing.Process(target=worker, args=(i, server_address))
+        processes.append(process)
+        process.start()
+
+    # Wait for all processes to finish
+    for process in processes:
+        process.join()
+   
+
+
 
 if __name__ == '__main__':
-    run_client()
+    run()

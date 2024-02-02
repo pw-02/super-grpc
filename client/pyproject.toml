@@ -1,6 +1,6 @@
 [project]
 name = "super_client"
-version = "13.0.0"
+version = "14.0.0"
 authors = [
   { name="Example Author", email="author@example.com" },
 ]

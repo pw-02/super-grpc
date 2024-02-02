@@ -2,7 +2,7 @@
 
 lambda_function_name: 'superlambda-CreateBatchFunction-FHh7VhqBhB0v'
 pre_process_workers: 1
-processing_workers: 6 #this must always be at least 2
+processing_workers: 5 #this must always be at least 2
 post_processing_workers: 1
 
   
