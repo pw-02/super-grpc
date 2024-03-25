@@ -14,14 +14,6 @@ class Job:
         self.pending_batches = {}
     
 
-    
-
-
-
-
-
-
-
     def increment_cache_hit_count(self) :
         with self.lock:
             self.cache_hits += 1

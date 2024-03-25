@@ -122,7 +122,7 @@ class Coordinator:
                 # Check if we have seen this batch_id before, if not add it
                 dataset_batches = self.registered_datasets[dataset_id].batches
 
-                if batch_id not in self.registered_datasets[dataset_id].batches:
+                if batch_id not in dataset_batches:
                     dataset_batches[batch_id] = Batch(batch_id, batch_sample_indices)
 
                 dataset_batches[batch_id].predicted_access_times[job_id] = predicted_time
