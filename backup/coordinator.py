@@ -28,7 +28,6 @@ def format_timestamp(current_timestamp, use_utc=True):
 
 class Coordinator:
 
-
     def __init__(self, lambda_function_name,testing_locally,sam_local_url,sam_local_endpoint, pre_process_workers, processing_workers, post_processing_workers  ):
         self.registered_jobs: Dict[int, Job] = {}  # Dictionary to store job information
         self.registered_datasets: Dict[int, Dataset] = {}
