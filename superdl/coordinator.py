@@ -27,7 +27,6 @@ class SUPERCoordinator:
         self.lambda_client:AWSLambdaClient = AWSLambdaClient()
         self.batch_prep_stop_event = threading.Event()
 
-    
     @property
     def active_epochs(self)->Dict[int, List[int]]:
         active_epochs: Dict[int, List[int]] = {}

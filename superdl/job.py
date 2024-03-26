@@ -6,8 +6,27 @@ from threading import Thread
 import queue
 import time
 import math
-from epoch import Epoch
 from utils import format_timestamp
+
+from utils import create_unique_id
+from typing import Dict, List
+from dataclasses import dataclass
+
+class Batch:
+    def __init__(self, batch_indicies):
+        self.bacth_id:str = create_unique_id(self.indicies)
+        self.indicies: List[int] = batch_indicies
+        self.is_cached:bool = False
+        self.caching_in_progress:bool = False
+        self.next_access_time:float = None
+        self.last_access_time:float = float('inf')
+
+class Epoch:
+    def __init__(self, epoch_id:int, epoch_batches:List[Batch] ):
+        self.epoch_id:int = epoch_id
+        self.batches: List[Batch] = epoch_batches
+        self.batch_ids: List[str] = [batch.batch_id for batch in self.batches]
+
 
 class MLTrainingJob():
     

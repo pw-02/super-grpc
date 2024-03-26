@@ -138,7 +138,7 @@ def remove_prefix(s: str, prefix: str) -> str:
 
 class AWSLambdaClient():
 
-    def __init__(self, epoch_id:int):
+    def __init__(self):
         self.lambda_client = None
     
     def invoke_function(self, function_name:str, payload, simulate:bool = False):
