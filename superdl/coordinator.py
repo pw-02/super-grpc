@@ -41,6 +41,7 @@ class SUPERCoordinator:
                 self.token_bucket.wait_for_tokens()
                 future = self.executor.submit(self.preftech_bacth, batch)
                 if future.result():
+                    batch.is_cached = True
                     logger.info(f"Batch {batch.bacth_id} prefetch succeeded")
                     self.token_bucket.batch_prefeteched(batch.bacth_id)
                 else:

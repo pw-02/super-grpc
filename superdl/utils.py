@@ -41,6 +41,9 @@ class TokenBucket:
         with self.lock:
             if bacth_id in self.prefetched_batches:
                 self.refill()
+                #remove so that a token only gets added to the bucket the first time the batch is accessed
+                #without this the lookahead_rate config setting would be inaccurate
+                self.prefetched_batches.remove(bacth_id)
 
     def wait_for_tokens(self):
         while not self.consume(1):
