@@ -9,12 +9,12 @@ from logger_config import logger
 from dataset import Dataset
 from job import MLTrainingJob, Epoch, Batch
 from sampling import BatchSampler, SequentialSampler
-from utils import format_timestamp,  CustomQueue, TokenBucket
+from utils import format_timestamp,  CustomQueue, BlockingSet
 from awsutils import AWSLambdaClient
 from queue import PriorityQueue, Queue, Empty, Full
 
 class SUPERCoordinator:
-
+    
     def __init__(self, args:SUPERArgs):
         self.super_args: SUPERArgs = args
         self.dataset:Dataset = Dataset(self.super_args.s3_data_dir)
@@ -24,51 +24,67 @@ class SUPERCoordinator:
         self.lambda_client:AWSLambdaClient = AWSLambdaClient()
         self.prefetch_batches_stop_event = threading.Event()
         self.prepared_lookahead_batches: List[str] = []
-        self.active_epoch = None
+        self.executor = futures.ThreadPoolExecutor(max_workers=args.max_prefetch_workers)  # Adjust max_workers as needed
+        self.active_epoch = self.next_epoch()
         self.queue_lock = threading.Lock()
         self.batch_queue = Queue()
         self.batch2_queue = CustomQueue(maxsize=args.max_lookahead_batches)
-        self.token_bucket:TokenBucket = TokenBucket(capacity=args.max_lookahead_batches, refill_rate=0)
-        self.prefetching_queue = Queue()
-        self.executor = futures.ThreadPoolExecutor(max_workers=args.max_prefetch_workers)  # Adjust max_workers as needed
 
-    def prefetch(self): 
+    def prefetch_batches(self):
         while not self.prefetch_batches_stop_event.is_set():
-            if self.prefetching_queue.empty():
-                    self.active_epoch = self.next_epoch()
             try:
-                batch:Batch = self.prefetching_queue.get(timeout=1) # Get the batch from the queue with timeout
-                self.token_bucket.wait_for_tokens()
-                future = self.executor.submit(self.preftech_bacth, batch)
+                # Get a batch from the queue with a timeout
+                batch = self.batch_queue.get(timeout=1)
+                future = self.executor.submit(self.invoke_prefetch_lambda, batch)
                 if future.result():
                     logger.info(f"Batch {batch.bacth_id} prefetch succeeded")
-                    self.token_bucket.batch_prefeteched(batch.bacth_id)
                 else:
                     logger.error(f"Batch {batch.bacth_id} prefetch failed")
             except Empty:
-                # Queue is empty, continue to the next iteration
-                continue
+                # If the queue is empty, continue without processing batches
+                pass
 
-    def preftech_bacth(self, batch:Batch):
+    def submit_batches(self):
+        while True:
+            new_epoch = self.next_epoch()      
+            for batch in new_epoch.batches:
+                try:
+                    self.batch2_queue.put(batch.bacth_id)
+                    self.batch_queue.put(batch)
+                except Full:
+                    # If the queue is full, wait for some time before retrying
+                    time.sleep(1)
+                    
+    def start_prefetching(self):
+        """Starts the prefetching process."""
+        try:
+            prefetch_thread = threading.Thread(target=self.prefetch_batches, daemon=False)
+            prefetch_thread.start()
+            
+            submit_batches_thread = threading.Thread(target=self.submit_batches, daemon=False)
+            submit_batches_thread.start()
+        
+        except Exception as e:
+            logger.error(f"Error in start_prefetching: {e}")
+
+    def invoke_prefetch_lambda(self, batch:Batch,transformations = None ):
         try:
             event_data = {
                 'bucket_name': self.dataset.bucket_name,
                 'batch_id': batch.bacth_id,
                 'batch_metadata': self.dataset.get_samples(batch.indicies),
                 }
-            #self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,event_data, True)
+            if transformations is not None:
+                event_data['transformations'] = transformations
+            # self.prepared_lookahead_batches.append(batch.bacth_id)
             return True
         except Exception as e:
             logger.error(f"Error in prefetch_batch: {e}")
             return False
     
-    def start_prefetching(self):
-        """Starts the prefetching process."""
-        try:
-            prefetch_thread = threading.Thread(target=self.prefetch, daemon=False)
-            prefetch_thread.start()
-        except Exception as e:
-            logger.error(f"Error in start_prefetching: {e}")
+    def freeup_lookhead(self, batch_id):
+        with self.queue_lock:
+            self.batch2_queue.remove_item(batch_id)
 
 
     def create_new_job(self, job_id):
@@ -77,20 +93,20 @@ class SUPERCoordinator:
     def assign_new_epoch_to_job(self, job_id):
         job:MLTrainingJob = self.jobs[job_id]
         if not job.already_processed_epoch(self.active_epoch.epoch_id):
-            job.prepare_new_epoch(self.epochs[self.active_epoch.epoch_id])
+            job.start_new_epoch(self.epochs[self.active_epoch.epoch_id])
     
     def next_batch_accesses_for_job(self, job_id, count = 1):
         job =  self.jobs[job_id]        
         job.is_active = True
         # next_bacthes = []
-
-        if job.pending_batches.empty(): #may go abck to change this to size < 2 to set up next epoch before current one ends
+        
+        if job.pending_batches.qsize() < 1: #may go abck to change this 1 to be configurable value
             self.assign_new_epoch_to_job(job.job_id)
 
         for i in range(0, min(job.pending_batches.qsize(), count)):
             batch:Batch = job.pending_batches.get(block=False)
             # next_bacthes.append(batch)
-            self.token_bucket.batch_accessed(bacth_id=batch.bacth_id)
+            self.freeup_lookhead(batch_id=batch.bacth_id)
         return batch
 
     def stop_workers(self):
@@ -108,11 +124,9 @@ class SUPERCoordinator:
         
     def next_epoch(self):
         epoch_id = len(self.epochs) + 1
-        new_epoch = Epoch(epoch_id)
+        self.epochs[epoch_id] = Epoch(epoch_id)
         for batch in self.batch_sampler:
-            new_epoch.add_batch(batch)
-            self.prefetching_queue.put(batch)
-        self.epochs[epoch_id] = new_epoch
+            self.epochs[epoch_id].add_batch(batch)
         return self.epochs[epoch_id]
 
 
@@ -120,7 +134,7 @@ if __name__ == "__main__":
     super_args:SUPERArgs = SUPERArgs()
     coordinator = SUPERCoordinator(super_args)
     coordinator.start_prefetching()
-    time.sleep(1)
+    time.sleep(4)
     job1 = 1
     coordinator.create_new_job(job1)
     for i in range (0,2):

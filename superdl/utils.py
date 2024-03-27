@@ -1,6 +1,97 @@
 import hashlib
 import time
 import math
+from queue import Queue
+
+import threading
+
+import collections
+import threading
+from queue import Empty
+
+class TokenBucket:
+    def __init__(self, capacity, refill_rate):
+        self.capacity = capacity
+        self.tokens = capacity
+        self.refill_rate = refill_rate
+        self.last_refill_time = time.time()
+        self.prefetched_batches = set()  # Keep track of downloaded/prefecthed bacthes
+        self.lock = threading.Lock()  # Lock for accessing shared resources
+    
+    def refill(self, tokens_to_add =1):
+        now = time.time()
+        delta_time = now - self.last_refill_time
+        # tokens_to_add = delta_time * self.refill_rate
+        self.tokens = min(self.capacity, self.tokens + tokens_to_add)
+        self.last_refill_time = now
+
+    def consume(self, tokens):
+        with self.lock:
+            if tokens <= self.tokens:
+                self.tokens -= tokens
+                return True
+            else:
+                return False
+
+    def batch_prefeteched(self, bacth_id):
+        with self.lock:
+            self.prefetched_batches.add(bacth_id)
+    
+    def batch_accessed(self, bacth_id):
+        with self.lock:
+            if bacth_id in self.prefetched_batches:
+                self.refill()
+
+    def wait_for_tokens(self):
+        while not self.consume(1):
+            time.sleep(0.1)  # Wait if there are not enough tokens available
+            # token_bucket.refill()  # Refill tokens during the wait
+    
+
+
+class CustomQueue(Queue):
+    def __iter__(self):
+        return iter(self.queue)
+    
+    def remove_item(self, item, block=True, timeout=None):
+
+        with self.not_empty:
+            if not block:
+                if not self._qsize():
+                    raise Empty
+            elif timeout is None:
+                while not self._qsize():
+                    self.not_empty.wait()
+            elif timeout < 0:
+                raise ValueError("'timeout' must be a non-negative number")
+            else:
+                endtime = time() + timeout
+                while not self._qsize():
+                    remaining = endtime - time()
+                    if remaining <= 0.0:
+                        raise Empty
+                    self.not_empty.wait(remaining)
+            if item in self.queue:
+                self.queue.remove(item)     
+            # item = self._get()
+            self.not_full.notify()
+            return item
+
+
+
+
+
+
+        # with self.mutex:
+        #     if item in self.queue:
+        #         self.queue.remove(item)
+        #         self.not_full.notify()
+        #         return True
+        #     return False
+    
+          
+
+
 def create_unique_id(int_list):
     # Convert integers to strings and concatenate them
     id_string = ''.join(str(x) for x in int_list)

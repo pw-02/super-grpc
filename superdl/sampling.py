@@ -1,5 +1,5 @@
 import random
-from batch import Batch
+from job import Batch
 
 class SequentialSampler:
     def __init__(self, dataset_len: int):
@@ -22,16 +22,19 @@ class SequentialSampler:
     def __len__(self):
         return self.dataset_len
 
+
 class RandomSampler:
-    def __init__(self, dataset_len:int):
+    def __init__(self, dataset_len: int):
         self.dataset_len = dataset_len
         self.indices = list(range(dataset_len))
 
     def __iter__(self):
-        return iter(random.sample(self.indices, len(self.indices)))
+        random.shuffle(self.indices)  # Shuffle the indices
+        return iter(self.indices)
 
     def __len__(self):
         return self.dataset_len
+
 
 class BatchSampler:
     def __init__(self, sampler, batch_size, drop_last=False):

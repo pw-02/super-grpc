@@ -8,7 +8,7 @@ class Dataset():
         # self.batch_size:int = batch_size
         # self.drop_last:bool = drop_last
         self.data_dir = data_dir
-        self.paired_samples: Dict[str, List[str]] = awsutils.load_paired_s3_object_keys(data_dir, True, True)
+        self.samples: Dict[str, List[str]] = awsutils.load_paired_s3_object_keys(data_dir, True, True)
         self.bucket_name = awsutils.S3Url(data_dir).bucket
     
     @functools.cached_property
@@ -16,19 +16,21 @@ class Dataset():
         return [
             (blob, class_index)
             for class_index, blob_class in enumerate(self.samples)
-            for blob in self.paired_samples[blob_class]
+            for blob in self.samples[blob_class]
         ]
 
 
     # @cached_property
     def __len__(self):
-        return sum(len(class_items) for class_items in self.paired_samples.values())
+        return sum(len(class_items) for class_items in self.samples.values())
     
     def get_samples(self, indices: List[int]):
         samples = []
         for i in indices:
             samples.append(self._classed_items[i])
         return samples
+    
+    
 
 
     
