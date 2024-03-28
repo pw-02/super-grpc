@@ -53,4 +53,3 @@ def request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=1
 
 if __name__ == '__main__':
     request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=4)
-    # run_unit_tests()

@@ -96,10 +96,10 @@ class SUPERCoordinator:
         else:
             job.prepare_for_new_epoch(self.next_epoch())
 
-    def next_batch_for_job(self, job_id, num_batches_requested  = 1):
-        job:MLTrainingJob =  self.jobs[job_id]        
+
+    def next_batch_for_job(self, job_id, num_batches_requested = 1):
+        job:MLTrainingJob =  self.jobs[job_id]     
         job.is_active = True
-        next_bacthes = []
 
         if job.pending_batches.size < 1: #may go back to change this to size < 2 to set up next epoch before current one ends
             self.assign_epoch_to_job(job)

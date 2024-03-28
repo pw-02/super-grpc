@@ -49,6 +49,7 @@ class MLTrainingJob():
         self.pending_batches = np.array([])
         self.is_active= False
         self.batch_processing_rate = 4 #batches/second
+        self.lookahead = 100
     
     def update_batch_processing_rate(self, rate):
         self.batch_processing_rate = rate
@@ -63,6 +64,8 @@ class MLTrainingJob():
             self.pending_batches = np.array(new_epoch.batches)
         else:
             self.pending_batches = np.append(self.pending_batches, new_epoch.batches, axis=0)
+    
+    
 
             
 
