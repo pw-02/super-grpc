@@ -26,7 +26,7 @@ def run_unit_tests():
     stub.JobEnded(cache_coordinator_pb2.JobEndedRequest(job_id=123))
     logger.info("Job Ended notification sent")
 
-def request_batches_test(num_epochs = 5, batches_per_epoch=45):
+def request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=16):
     # Connect to the gRPC server
     channel = grpc.insecure_channel('localhost:50051')
     stub = cache_coordinator_pb2_grpc.CacheCoordinatorServiceStub(channel)
@@ -39,18 +39,18 @@ def request_batches_test(num_epochs = 5, batches_per_epoch=45):
     end = time.time()
     for e in range(0, num_epochs):
         indicies_count = 0
-        for i in range(0, batches_per_epoch):
-            next_batch_response = stub.GetNextBatchToProcess(cache_coordinator_pb2.GetNextBatchRequest(job_id=123, num_batches_requested=1))
+        while indicies_count < epoch_size:
+            next_batch_response = stub.GetNextBatchToProcess(cache_coordinator_pb2.GetNextBatchRequest(job_id=123, num_batches_requested=batches_per_request))
             for batch in next_batch_response.batches:
                 indicies_count += len(batch.indicies)
                 # logger.info(f"{i+1} - Received batch: {batch.batch_id}, Size: {len(batch.indicies)}")
         epoch_time = time.time() - end
-        logger.info(f" Epoch {e+1}: {indicies_count}, Epoch time: {epoch_time} seconds, Rate: {batches_per_epoch/epoch_time} batches/sec")
+        logger.info(f" Epoch {e+1}: {indicies_count}, Epoch time: {epoch_time} seconds, Rate: {(indicies_count/batches_per_request)/epoch_time} imgs/sec")
         end = time.time()
     end_time = time.time()
     execution_time = end_time - start_time
     logger.info(f"Total execution time: {execution_time} seconds")
 
 if __name__ == '__main__':
-    request_batches_test(num_epochs = 2, batches_per_epoch=782 * 5)
+    request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=4)
     # run_unit_tests()
