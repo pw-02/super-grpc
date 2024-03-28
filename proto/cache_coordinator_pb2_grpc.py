@@ -10,8 +10,6 @@ class CacheCoordinatorServiceStub(object):
     """
     Command to create stub files:
     python -m grpc_tools.protoc --proto_path=. ./proto/cache_coordinator.proto --python_out=. --grpc_python_out=.
-    rpc RegisterJob(JobInfo) returns (RegisterJobResponse);
-    rpc SendMetrics(MetricsRequest) returns (google.protobuf.Empty);
     """
 
     def __init__(self, channel):
@@ -20,35 +18,25 @@ class CacheCoordinatorServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetBatchStatus = channel.unary_unary(
-                '/CacheCoordinatorService/GetBatchStatus',
-                request_serializer=proto_dot_cache__coordinator__pb2.GetBatchStatusRequest.SerializeToString,
-                response_deserializer=proto_dot_cache__coordinator__pb2.GetBatchStatusResponse.FromString,
-                )
-        self.RegisterDataset = channel.unary_unary(
-                '/CacheCoordinatorService/RegisterDataset',
-                request_serializer=proto_dot_cache__coordinator__pb2.RegisterDatasetInfo.SerializeToString,
-                response_deserializer=proto_dot_cache__coordinator__pb2.RegisterDatasetResponse.FromString,
+        self.Ping = channel.unary_unary(
+                '/CacheCoordinatorService/Ping',
+                request_serializer=proto_dot_cache__coordinator__pb2.PingRequest.SerializeToString,
+                response_deserializer=proto_dot_cache__coordinator__pb2.PingResponse.FromString,
                 )
         self.RegisterJob = channel.unary_unary(
                 '/CacheCoordinatorService/RegisterJob',
-                request_serializer=proto_dot_cache__coordinator__pb2.RegisterJobInfo.SerializeToString,
+                request_serializer=proto_dot_cache__coordinator__pb2.RegisterJobRequest.SerializeToString,
                 response_deserializer=proto_dot_cache__coordinator__pb2.RegisterJobResponse.FromString,
                 )
-        self.ShareBatchAccessPattern = channel.unary_unary(
-                '/CacheCoordinatorService/ShareBatchAccessPattern',
-                request_serializer=proto_dot_cache__coordinator__pb2.BatchAccessPatternList.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        self.GetNextBatchToProcess = channel.unary_unary(
+                '/CacheCoordinatorService/GetNextBatchToProcess',
+                request_serializer=proto_dot_cache__coordinator__pb2.GetNextBatchRequest.SerializeToString,
+                response_deserializer=proto_dot_cache__coordinator__pb2.GetNextBatchResponse.FromString,
                 )
-        self.ShareJobMetrics = channel.unary_unary(
-                '/CacheCoordinatorService/ShareJobMetrics',
-                request_serializer=proto_dot_cache__coordinator__pb2.JobMetricsInfo.SerializeToString,
+        self.JobEnded = channel.unary_unary(
+                '/CacheCoordinatorService/JobEnded',
+                request_serializer=proto_dot_cache__coordinator__pb2.JobEndedRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                )
-        self.PingServer = channel.unary_unary(
-                '/CacheCoordinatorService/PingServer',
-                request_serializer=proto_dot_cache__coordinator__pb2.GetPingServerRequest.SerializeToString,
-                response_deserializer=proto_dot_cache__coordinator__pb2.GetPingServerResponse.FromString,
                 )
 
 
@@ -56,18 +44,12 @@ class CacheCoordinatorServiceServicer(object):
     """
     Command to create stub files:
     python -m grpc_tools.protoc --proto_path=. ./proto/cache_coordinator.proto --python_out=. --grpc_python_out=.
-    rpc RegisterJob(JobInfo) returns (RegisterJobResponse);
-    rpc SendMetrics(MetricsRequest) returns (google.protobuf.Empty);
     """
 
-    def GetBatchStatus(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def RegisterDataset(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def Ping(self, request, context):
+        """rpc RegisterJob(JobInfo) returns (RegisterJobResponse);
+        rpc SendMetrics(MetricsRequest) returns (google.protobuf.Empty);
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -78,19 +60,13 @@ class CacheCoordinatorServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ShareBatchAccessPattern(self, request, context):
+    def GetNextBatchToProcess(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ShareJobMetrics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def PingServer(self, request, context):
+    def JobEnded(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -99,35 +75,25 @@ class CacheCoordinatorServiceServicer(object):
 
 def add_CacheCoordinatorServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetBatchStatus': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetBatchStatus,
-                    request_deserializer=proto_dot_cache__coordinator__pb2.GetBatchStatusRequest.FromString,
-                    response_serializer=proto_dot_cache__coordinator__pb2.GetBatchStatusResponse.SerializeToString,
-            ),
-            'RegisterDataset': grpc.unary_unary_rpc_method_handler(
-                    servicer.RegisterDataset,
-                    request_deserializer=proto_dot_cache__coordinator__pb2.RegisterDatasetInfo.FromString,
-                    response_serializer=proto_dot_cache__coordinator__pb2.RegisterDatasetResponse.SerializeToString,
+            'Ping': grpc.unary_unary_rpc_method_handler(
+                    servicer.Ping,
+                    request_deserializer=proto_dot_cache__coordinator__pb2.PingRequest.FromString,
+                    response_serializer=proto_dot_cache__coordinator__pb2.PingResponse.SerializeToString,
             ),
             'RegisterJob': grpc.unary_unary_rpc_method_handler(
                     servicer.RegisterJob,
-                    request_deserializer=proto_dot_cache__coordinator__pb2.RegisterJobInfo.FromString,
+                    request_deserializer=proto_dot_cache__coordinator__pb2.RegisterJobRequest.FromString,
                     response_serializer=proto_dot_cache__coordinator__pb2.RegisterJobResponse.SerializeToString,
             ),
-            'ShareBatchAccessPattern': grpc.unary_unary_rpc_method_handler(
-                    servicer.ShareBatchAccessPattern,
-                    request_deserializer=proto_dot_cache__coordinator__pb2.BatchAccessPatternList.FromString,
-                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            'GetNextBatchToProcess': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetNextBatchToProcess,
+                    request_deserializer=proto_dot_cache__coordinator__pb2.GetNextBatchRequest.FromString,
+                    response_serializer=proto_dot_cache__coordinator__pb2.GetNextBatchResponse.SerializeToString,
             ),
-            'ShareJobMetrics': grpc.unary_unary_rpc_method_handler(
-                    servicer.ShareJobMetrics,
-                    request_deserializer=proto_dot_cache__coordinator__pb2.JobMetricsInfo.FromString,
+            'JobEnded': grpc.unary_unary_rpc_method_handler(
+                    servicer.JobEnded,
+                    request_deserializer=proto_dot_cache__coordinator__pb2.JobEndedRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            ),
-            'PingServer': grpc.unary_unary_rpc_method_handler(
-                    servicer.PingServer,
-                    request_deserializer=proto_dot_cache__coordinator__pb2.GetPingServerRequest.FromString,
-                    response_serializer=proto_dot_cache__coordinator__pb2.GetPingServerResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -140,12 +106,10 @@ class CacheCoordinatorService(object):
     """
     Command to create stub files:
     python -m grpc_tools.protoc --proto_path=. ./proto/cache_coordinator.proto --python_out=. --grpc_python_out=.
-    rpc RegisterJob(JobInfo) returns (RegisterJobResponse);
-    rpc SendMetrics(MetricsRequest) returns (google.protobuf.Empty);
     """
 
     @staticmethod
-    def GetBatchStatus(request,
+    def Ping(request,
             target,
             options=(),
             channel_credentials=None,
@@ -155,26 +119,9 @@ class CacheCoordinatorService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/GetBatchStatus',
-            proto_dot_cache__coordinator__pb2.GetBatchStatusRequest.SerializeToString,
-            proto_dot_cache__coordinator__pb2.GetBatchStatusResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def RegisterDataset(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/RegisterDataset',
-            proto_dot_cache__coordinator__pb2.RegisterDatasetInfo.SerializeToString,
-            proto_dot_cache__coordinator__pb2.RegisterDatasetResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/Ping',
+            proto_dot_cache__coordinator__pb2.PingRequest.SerializeToString,
+            proto_dot_cache__coordinator__pb2.PingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -190,13 +137,13 @@ class CacheCoordinatorService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/RegisterJob',
-            proto_dot_cache__coordinator__pb2.RegisterJobInfo.SerializeToString,
+            proto_dot_cache__coordinator__pb2.RegisterJobRequest.SerializeToString,
             proto_dot_cache__coordinator__pb2.RegisterJobResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def ShareBatchAccessPattern(request,
+    def GetNextBatchToProcess(request,
             target,
             options=(),
             channel_credentials=None,
@@ -206,14 +153,14 @@ class CacheCoordinatorService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/ShareBatchAccessPattern',
-            proto_dot_cache__coordinator__pb2.BatchAccessPatternList.SerializeToString,
-            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/GetNextBatchToProcess',
+            proto_dot_cache__coordinator__pb2.GetNextBatchRequest.SerializeToString,
+            proto_dot_cache__coordinator__pb2.GetNextBatchResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def ShareJobMetrics(request,
+    def JobEnded(request,
             target,
             options=(),
             channel_credentials=None,
@@ -223,25 +170,8 @@ class CacheCoordinatorService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/ShareJobMetrics',
-            proto_dot_cache__coordinator__pb2.JobMetricsInfo.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/JobEnded',
+            proto_dot_cache__coordinator__pb2.JobEndedRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def PingServer(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/CacheCoordinatorService/PingServer',
-            proto_dot_cache__coordinator__pb2.GetPingServerRequest.SerializeToString,
-            proto_dot_cache__coordinator__pb2.GetPingServerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

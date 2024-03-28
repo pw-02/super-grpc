@@ -37,9 +37,9 @@ class SUPERCoordinator:
                 batch = self.batch_queue.get(timeout=1)
                 future = self.executor.submit(self.invoke_prefetch_lambda, batch)
                 if future.result():
-                    logger.info(f"Batch {batch.bacth_id} prefetch succeeded")
+                    logger.info(f"Batch {batch.batch_id} prefetch succeeded")
                 else:
-                    logger.error(f"Batch {batch.bacth_id} prefetch failed")
+                    logger.error(f"Batch {batch.batch_id} prefetch failed")
             except Empty:
                 # If the queue is empty, continue without processing batches
                 pass

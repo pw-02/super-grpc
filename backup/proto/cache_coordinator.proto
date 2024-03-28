@@ -8,52 +8,24 @@ python -m grpc_tools.protoc --proto_path=. ./proto/cache_coordinator.proto --pyt
 service CacheCoordinatorService {
   //rpc RegisterJob(JobInfo) returns (RegisterJobResponse);
   //rpc SendMetrics(MetricsRequest) returns (google.protobuf.Empty);
-  rpc Ping(PingRequest) returns (PingResponse);
-  rpc RegisterJob(RegisterJobRequest) returns (RegisterJobResponse);
-  rpc GetNextBatchToProcess(GetNextBatchRequest) returns (GetNextBatchResponse);
-  rpc JobEnded(JobEndedRequest) returns (google.protobuf.Empty);
+  
+  rpc GetBatchStatus(GetBatchStatusRequest) returns (GetBatchStatusResponse);
+  rpc RegisterDataset(RegisterDatasetInfo) returns (RegisterDatasetResponse);
+  rpc RegisterJob(RegisterJobInfo) returns (RegisterJobResponse);
+  rpc ShareBatchAccessPattern(BatchAccessPatternList) returns (google.protobuf.Empty);
+  rpc ShareJobMetrics(JobMetricsInfo) returns (google.protobuf.Empty);
+  rpc PingServer(GetPingServerRequest) returns (GetPingServerResponse);
+
 }
 
-message PingRequest {
+message GetPingServerRequest {
   string message =1;
 }
 
-message PingResponse {
+message GetPingServerResponse {
   string message =1;
 }
 
-message RegisterJobRequest {
-  int32 job_id = 1;
-  string data_dir = 2;
-  }
-
-message RegisterJobResponse {
-  bool job_registered = 1;
-  string message =2;
-  }
-
-  message GetNextBatchRequest {
-  int32 job_id = 1;
-  int32 num_batches_requested = 2;
-  }
-
-message GetNextBatchResponse {
-  int32 job_id = 1;
-  repeated Batch batches = 2;
-  }
-
-message Batch {
-  string batch_id = 1;
-  repeated int32 indicies = 2;
-  bool is_cached = 3;
-}
-
- message JobEndedRequest {
-    int32 job_id = 1;
-}
-
-
-/*
 message GetBatchStatusRequest {
   int64 batch_id = 1;
   string dataset_id =2;
@@ -74,7 +46,10 @@ message GetBatchStatusResponse {
     string metrics = 3;
 }
 
-
+message RegisterJobResponse {
+  bool job_registered = 1;
+  string message =2;
+  }
 
 message RegisterDatasetResponse {
   bool dataset_registered = 1;
@@ -85,6 +60,12 @@ message RegisterDatasetResponse {
   string data_dir =2;
   string transformations =3;
   string labelled_samples = 4;
+}
+
+  message RegisterJobInfo {
+  int32 job_id = 1;
+  repeated string dataset_ids = 2;
+
 }
 
 message BatchAccessPatternList {
@@ -101,4 +82,3 @@ message Batch {
 message Message {
   string message =1;
   }
-  */

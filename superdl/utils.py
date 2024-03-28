@@ -2,10 +2,7 @@ import hashlib
 import time
 import math
 from queue import Queue
-
 import threading
-
-import collections
 import threading
 from queue import Empty
 
@@ -33,17 +30,17 @@ class TokenBucket:
             else:
                 return False
 
-    def batch_prefeteched(self, bacth_id):
+    def batch_prefeteched(self, batch_id):
         with self.lock:
-            self.prefetched_batches.add(bacth_id)
+            self.prefetched_batches.add(batch_id)
     
-    def batch_accessed(self, bacth_id):
+    def batch_accessed(self, batch_id):
         with self.lock:
-            if bacth_id in self.prefetched_batches:
+            if batch_id in self.prefetched_batches:
                 self.refill()
                 #remove so that a token only gets added to the bucket the first time the batch is accessed
                 #without this the lookahead_rate config setting would be inaccurate
-                self.prefetched_batches.remove(bacth_id)
+                self.prefetched_batches.remove(batch_id)
 
     def wait_for_tokens(self):
         while not self.consume(1):
@@ -81,20 +78,6 @@ class CustomQueue(Queue):
             return item
 
 
-
-
-
-
-        # with self.mutex:
-        #     if item in self.queue:
-        #         self.queue.remove(item)
-        #         self.not_full.notify()
-        #         return True
-        #     return False
-    
-          
-
-
 def create_unique_id(int_list):
     # Convert integers to strings and concatenate them
     id_string = ''.join(str(x) for x in int_list)
@@ -114,3 +97,14 @@ def format_timestamp(current_timestamp, use_utc=True):
 
     formatted_current_time = time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
     return formatted_current_time
+
+def remove_trailing_slash(path:str):
+    """
+    Removes trailing slashes from a directory path.
+    """
+    path = path.strip()
+    if path.endswith('/'):
+        return path[:-1]  # Remove the last character (trailing slash)
+    if path.endswith('\\'):
+        return path[:-1]  # Remove the last character (trailing slash)
+    return path

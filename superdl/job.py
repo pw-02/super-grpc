@@ -6,30 +6,36 @@ import time
 import math
 from utils import format_timestamp
 from queue import Queue
-
 from utils import create_unique_id, CustomQueue
 from typing import Dict, List
 from dataclasses import dataclass
+import numpy as np
 
 class Batch:
     def __init__(self, batch_indicies):
         self.indicies: List[int] = batch_indicies
-        self.bacth_id:str = create_unique_id(self.indicies)
+        self.batch_id:str = create_unique_id(self.indicies)
         self.is_cached:bool = False
         self.caching_in_progress:bool = False
         self.next_access_time:float = None
         self.last_access_time:float = float('inf')
         self.parent_epoch_id:int = None
+        self.job_access_times = {}  # Dictionary to store job-specific access times
+    
+    def update_access_time(self, job_id):
+        self.last_accessed_time = time.time()
+        self.job_access_times[job_id] = self.last_accessed_time
 
 class Epoch:
     def __init__(self, epoch_id:int):
         self.epoch_id:int = epoch_id
         self.batches: List[Batch] = []
         self.batch_ids: List[str] = []
+        self.is_active = True
 
     def add_batch(self, batch:Batch):
         self.batches.append(batch)
-        self.batch_ids.append(batch.bacth_id)
+        self.batch_ids.append(batch.batch_id)
     
     @property
     def progress(self):
@@ -39,20 +45,26 @@ class MLTrainingJob():
     def __init__(self,job_id):
         self.job_id = job_id
         self.current_epoch_id = None
-        self.processed_epochs: List[int] = []
-        self.pending_batches: CustomQueue[Batch] = CustomQueue()
+        self.processed_epochs_ids: List[int] = []
+        self.pending_batches = np.array([])
         self.is_active= False
-        self.training_speed =  1
+        self.batch_processing_rate = 4 #batches/second
+    
+    def update_batch_processing_rate(self, rate):
+        self.batch_processing_rate = rate
 
     def already_processed_epoch(self, epoch_id):
-        return epoch_id in self.processed_epochs
+        return epoch_id in self.processed_epochs_ids
     
-    def prepare_new_epoch(self, epoch:Epoch):
-        self.current_epoch_id = epoch.epoch_id
-        for batch in epoch.batches:
-            self.pending_batches.put(batch)
-    
+    def prepare_for_new_epoch(self, new_epoch:Epoch):  
+        self.current_epoch_id = new_epoch.epoch_id
+        
+        if len(self.pending_batches) == 0:
+            self.pending_batches = np.array(new_epoch.batches)
+        else:
+            self.pending_batches = np.append(self.pending_batches, new_epoch.batches, axis=0)
 
+            
 
     def predict_batch_access_time(self, batch_id):
         current_time = time.time()

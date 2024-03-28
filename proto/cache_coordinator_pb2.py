@@ -15,39 +15,29 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dproto/cache_coordinator.proto\x1a\x1bgoogle/protobuf/empty.proto\"\'\n\x14GetPingServerRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"(\n\x15GetPingServerResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"=\n\x15GetBatchStatusRequest\x12\x10\n\x08\x62\x61tch_id\x18\x01 \x01(\x03\x12\x12\n\ndataset_id\x18\x02 \x01(\t\"N\n\x16GetBatchStatusResponse\x12#\n\x1b\x62\x61tch_cached_or_in_progress\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x19\n\x07JoEnded\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\"E\n\x0eJobMetricsInfo\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\x12\x12\n\ndataset_id\x18\x02 \x01(\t\x12\x0f\n\x07metrics\x18\x03 \x01(\t\">\n\x13RegisterJobResponse\x12\x16\n\x0ejob_registered\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"F\n\x17RegisterDatasetResponse\x12\x1a\n\x12\x64\x61taset_registered\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"n\n\x13RegisterDatasetInfo\x12\x12\n\ndataset_id\x18\x01 \x01(\t\x12\x10\n\x08\x64\x61ta_dir\x18\x02 \x01(\t\x12\x17\n\x0ftransformations\x18\x03 \x01(\t\x12\x18\n\x10labelled_samples\x18\x04 \x01(\t\"6\n\x0fRegisterJobInfo\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\x12\x13\n\x0b\x64\x61taset_ids\x18\x02 \x03(\t\"U\n\x16\x42\x61tchAccessPatternList\x12\x0e\n\x06job_id\x18\x01 \x01(\x03\x12\x17\n\x07\x62\x61tches\x18\x02 \x03(\x0b\x32\x06.Batch\x12\x12\n\ndataset_id\x18\x03 \x01(\t\"1\n\x05\x42\x61tch\x12\x10\n\x08\x62\x61tch_id\x18\x01 \x01(\x03\x12\x16\n\x0esample_indices\x18\x02 \x03(\x05\"\x1a\n\x07Message\x12\x0f\n\x07message\x18\x01 \x01(\t2\x9b\x03\n\x17\x43\x61\x63heCoordinatorService\x12\x41\n\x0eGetBatchStatus\x12\x16.GetBatchStatusRequest\x1a\x17.GetBatchStatusResponse\x12\x41\n\x0fRegisterDataset\x12\x14.RegisterDatasetInfo\x1a\x18.RegisterDatasetResponse\x12\x35\n\x0bRegisterJob\x12\x10.RegisterJobInfo\x1a\x14.RegisterJobResponse\x12J\n\x17ShareBatchAccessPattern\x12\x17.BatchAccessPatternList\x1a\x16.google.protobuf.Empty\x12:\n\x0fShareJobMetrics\x12\x0f.JobMetricsInfo\x1a\x16.google.protobuf.Empty\x12;\n\nPingServer\x12\x15.GetPingServerRequest\x1a\x16.GetPingServerResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dproto/cache_coordinator.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x1e\n\x0bPingRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x1f\n\x0cPingResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"6\n\x12RegisterJobRequest\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x61ta_dir\x18\x02 \x01(\t\">\n\x13RegisterJobResponse\x12\x16\n\x0ejob_registered\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"D\n\x13GetNextBatchRequest\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\x12\x1d\n\x15num_batches_requested\x18\x02 \x01(\x05\"?\n\x14GetNextBatchResponse\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\x12\x17\n\x07\x62\x61tches\x18\x02 \x03(\x0b\x32\x06.Batch\">\n\x05\x42\x61tch\x12\x10\n\x08\x62\x61tch_id\x18\x01 \x01(\t\x12\x10\n\x08indicies\x18\x02 \x03(\x05\x12\x11\n\tis_cached\x18\x03 \x01(\x08\"!\n\x0fJobEndedRequest\x12\x0e\n\x06job_id\x18\x01 \x01(\x05\x32\xf4\x01\n\x17\x43\x61\x63heCoordinatorService\x12#\n\x04Ping\x12\x0c.PingRequest\x1a\r.PingResponse\x12\x38\n\x0bRegisterJob\x12\x13.RegisterJobRequest\x1a\x14.RegisterJobResponse\x12\x44\n\x15GetNextBatchToProcess\x12\x14.GetNextBatchRequest\x1a\x15.GetNextBatchResponse\x12\x34\n\x08JobEnded\x12\x10.JobEndedRequest\x1a\x16.google.protobuf.Emptyb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'proto.cache_coordinator_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
-  _globals['_GETPINGSERVERREQUEST']._serialized_start=62
-  _globals['_GETPINGSERVERREQUEST']._serialized_end=101
-  _globals['_GETPINGSERVERRESPONSE']._serialized_start=103
-  _globals['_GETPINGSERVERRESPONSE']._serialized_end=143
-  _globals['_GETBATCHSTATUSREQUEST']._serialized_start=145
-  _globals['_GETBATCHSTATUSREQUEST']._serialized_end=206
-  _globals['_GETBATCHSTATUSRESPONSE']._serialized_start=208
-  _globals['_GETBATCHSTATUSRESPONSE']._serialized_end=286
-  _globals['_JOENDED']._serialized_start=288
-  _globals['_JOENDED']._serialized_end=313
-  _globals['_JOBMETRICSINFO']._serialized_start=315
-  _globals['_JOBMETRICSINFO']._serialized_end=384
-  _globals['_REGISTERJOBRESPONSE']._serialized_start=386
-  _globals['_REGISTERJOBRESPONSE']._serialized_end=448
-  _globals['_REGISTERDATASETRESPONSE']._serialized_start=450
-  _globals['_REGISTERDATASETRESPONSE']._serialized_end=520
-  _globals['_REGISTERDATASETINFO']._serialized_start=522
-  _globals['_REGISTERDATASETINFO']._serialized_end=632
-  _globals['_REGISTERJOBINFO']._serialized_start=634
-  _globals['_REGISTERJOBINFO']._serialized_end=688
-  _globals['_BATCHACCESSPATTERNLIST']._serialized_start=690
-  _globals['_BATCHACCESSPATTERNLIST']._serialized_end=775
-  _globals['_BATCH']._serialized_start=777
-  _globals['_BATCH']._serialized_end=826
-  _globals['_MESSAGE']._serialized_start=828
-  _globals['_MESSAGE']._serialized_end=854
-  _globals['_CACHECOORDINATORSERVICE']._serialized_start=857
-  _globals['_CACHECOORDINATORSERVICE']._serialized_end=1268
+  _globals['_PINGREQUEST']._serialized_start=62
+  _globals['_PINGREQUEST']._serialized_end=92
+  _globals['_PINGRESPONSE']._serialized_start=94
+  _globals['_PINGRESPONSE']._serialized_end=125
+  _globals['_REGISTERJOBREQUEST']._serialized_start=127
+  _globals['_REGISTERJOBREQUEST']._serialized_end=181
+  _globals['_REGISTERJOBRESPONSE']._serialized_start=183
+  _globals['_REGISTERJOBRESPONSE']._serialized_end=245
+  _globals['_GETNEXTBATCHREQUEST']._serialized_start=247
+  _globals['_GETNEXTBATCHREQUEST']._serialized_end=315
+  _globals['_GETNEXTBATCHRESPONSE']._serialized_start=317
+  _globals['_GETNEXTBATCHRESPONSE']._serialized_end=380
+  _globals['_BATCH']._serialized_start=382
+  _globals['_BATCH']._serialized_end=444
+  _globals['_JOBENDEDREQUEST']._serialized_start=446
+  _globals['_JOBENDEDREQUEST']._serialized_end=479
+  _globals['_CACHECOORDINATORSERVICE']._serialized_start=482
+  _globals['_CACHECOORDINATORSERVICE']._serialized_end=726
 # @@protoc_insertion_point(module_scope)
