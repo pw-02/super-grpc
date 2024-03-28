@@ -45,18 +45,32 @@ class SUPERCoordinator:
                 self.epochs[self.batch_sampler.epoch_seed].batches_finalized = True
                 self.batch_sampler.increment_epoch_seed()
                 next_batch:Batch = next(self.batch_sampler)
+
             future = self.executor.submit(self.preftech_bacth, next_batch)
-            if future.result():
-                next_batch.is_cached = True
-                if next_batch.epoch_seed in self.epochs:
-                    self.epochs[next_batch.epoch_seed].add_batch(next_batch)
+
+            try:
+                prefetch_result = future.result()
+                if prefetch_result:
+                    next_batch.is_cached = True
+                    epoch = self.epochs.setdefault(next_batch.epoch_seed, Epoch(next_batch.epoch_seed))
+                    epoch.add_batch(next_batch)
+                    logger.info(f"Batch {next_batch.batch_id} prefetch succeeded")
                 else:
-                    self.epochs[next_batch.epoch_seed] = Epoch(next_batch.epoch_seed)
-                    self.epochs[next_batch.epoch_seed].add_batch(next_batch)
-                logger.info(f"Batch {next_batch.batch_id} prefetch succeeded")
-                # self.token_bucket.batch_prefeteched(next_batch.batch_id)
-            else:
-                logger.error(f"Batch {next_batch.batch_id} prefetch failed")
+                    logger.error(f"Batch {next_batch.batch_id} prefetch failed")
+            except Exception as e:
+                logger.error(f"Error prefetching batch {next_batch.batch_id}: {e}")
+                 
+            # if future.result():
+            #     next_batch.is_cached = True
+            #     if next_batch.epoch_seed in self.epochs:
+            #         self.epochs[next_batch.epoch_seed].add_batch(next_batch)
+            #     else:
+            #         self.epochs[next_batch.epoch_seed] = Epoch(next_batch.epoch_seed)
+            #         self.epochs[next_batch.epoch_seed].add_batch(next_batch)
+            #     logger.info(f"Batch {next_batch.batch_id} prefetch succeeded")
+            #     # self.token_bucket.batch_prefeteched(next_batch.batch_id)
+            # else:
+            #     logger.error(f"Batch {next_batch.batch_id} prefetch failed")
     
     def create_new_job(self, job_id, data_dir):
         if job_id in self.jobs:
@@ -88,8 +102,8 @@ class SUPERCoordinator:
             self.allocate_epoch_to_job(job)
         
         while job.current_epoch.pending_batch_accesses[job.job_id].qsize() < 1:
-            self.token_bucket.capacity +=10
-            time.sleep(0.1)
+            # self.token_bucket.capacity +=10
+            time.sleep(0.01)
             
         num_items = min(job.current_epoch.pending_batch_accesses[job.job_id].qsize(), num_batches_requested)
         next_batches = []
@@ -104,13 +118,6 @@ class SUPERCoordinator:
         # self.token_bucket.batch_accessed(batch_ids) #adds a new token to the bucket if the first time this batch is accessed
         return next_batches
 
-    # def assign_epoch_to_job(self, job:MLTrainingJob):
-    #     if job.active_epoch is not None:   
-    #         job.epoch_seed_history.append(job.active_epoch.epoch_seed)  
-    #     if self.active_epoch.epoch_seed not in job.epoch_seed_history:
-    #         job.prepare_for_new_epoch(self.active_epoch)
-    #     else:
-    #         job.prepare_for_new_epoch(self.next_epoch())
 
     def preftech_bacth(self, batch:Batch):
         try:
@@ -119,6 +126,7 @@ class SUPERCoordinator:
                 'batch_id': batch.batch_id,
                 'batch_metadata': self.dataset.get_samples(batch.indicies),
                 }
+            time.sleep(0.02)
             #self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,event_data, True)
             return True
         except Exception as e:
