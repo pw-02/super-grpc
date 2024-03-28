@@ -39,10 +39,14 @@ def request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=1
     end = time.time()
     for e in range(0, num_epochs):
         indicies_count = 0
+        request_counter  = 0
         while indicies_count < epoch_size:
             next_batch_response = stub.GetNextBatchToProcess(cache_coordinator_pb2.GetNextBatchRequest(job_id=123, num_batches_requested=batches_per_request))
+            time.sleep(0.003)
+            request_counter +=1
             for batch in next_batch_response.batches:
                 indicies_count += len(batch.indicies)
+            logger.info(f"{request_counter}-{len(next_batch_response.batches)}-{indicies_count}")
                 # logger.info(f"{i+1} - Received batch: {batch.batch_id}, Size: {len(batch.indicies)}")
         epoch_time = time.time() - end
         logger.info(f" Epoch {e+1}: {indicies_count}, Epoch time: {epoch_time} seconds, Rate: {(indicies_count/batches_per_request)/epoch_time} imgs/sec")
@@ -52,4 +56,5 @@ def request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=1
     logger.info(f"Total execution time: {execution_time} seconds")
 
 if __name__ == '__main__':
-    request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=4)
+    request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=10)
+    

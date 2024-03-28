@@ -7,73 +7,56 @@ from args import SUPERArgs
 from logger_config import logger
 from dataset import Dataset
 from job import MLTrainingJob, Epoch, Batch
-from sampling import BatchSampler, SequentialSampler
+from sampling import BatchSampler, SequentialSampler, EndOfEpochException, RandomSampler
 from utils import format_timestamp,  TokenBucket, remove_trailing_slash
 from awsutils import AWSLambdaClient
 from queue import  Queue, Empty
 import numpy as np
+from copy import deepcopy
 
 class SUPERCoordinator:
     
     def __init__(self, args:SUPERArgs):
         self.super_args: SUPERArgs = args
         self.dataset:Dataset = Dataset(self.super_args.s3_data_dir)
-        self.batch_sampler:BatchSampler = BatchSampler(SequentialSampler(len(self.dataset)), self.super_args.batch_size, self.super_args.drop_last)
         self.epochs: Dict[int, Epoch] = {}
+        self.batch_sampler:BatchSampler = BatchSampler(SequentialSampler(len(self.dataset)), self.super_args.batch_size, self.super_args.drop_last)
         self.jobs: Dict[int, MLTrainingJob] = {}
         self.lambda_client:AWSLambdaClient = AWSLambdaClient()
         self.prefetch_batches_stop_event = threading.Event()
         self.token_bucket:TokenBucket = TokenBucket(capacity=args.max_lookahead_batches, refill_rate=0)
-        self.prefetching_queue = Queue()
-        self.active_epoch = self.next_epoch()
         self.executor = futures.ThreadPoolExecutor(max_workers=args.max_prefetch_workers)  # Adjust max_workers as neede
         logger.info(f"Dataset Confirmed. Data Dir: {self.dataset.data_dir}, Total Files: {len(self.dataset)}, Total Batches: {len(self.batch_sampler)}")
-
-    def prefetch(self): 
-        while not self.prefetch_batches_stop_event.is_set():
-            if self.prefetching_queue.empty():
-                    #all batches in the current global epoch have been processed
-                    if self.active_epoch.epoch_id < max(self.epochs.keys()):
-                        self.active_epoch = max(self.epochs.keys())
-                    else:
-                        self.active_epoch = self.next_epoch()
-
-                    for batch in self.active_epoch.batches:
-                        self.prefetching_queue.put(batch)
-            try:
-                batch:Batch = self.prefetching_queue.get(timeout=1) # Get the batch from the queue with timeout
-                self.token_bucket.wait_for_tokens()
-                future = self.executor.submit(self.preftech_bacth, batch)
-                if future.result():
-                    batch.is_cached = True
-                    logger.info(f"Batch {batch.batch_id} prefetch succeeded")
-                    self.token_bucket.batch_prefeteched(batch.batch_id)
-                else:
-                    logger.error(f"Batch {batch.batch_id} prefetch failed")
-            except Empty:
-                # Queue is empty, continue to the next iteration
-                continue
-
-    def preftech_bacth(self, batch:Batch):
-        try:
-            event_data = {
-                'bucket_name': self.dataset.bucket_name,
-                'batch_id': batch.batch_id,
-                'batch_metadata': self.dataset.get_samples(batch.indicies),
-                }
-            #self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,event_data, True)
-            return True
-        except Exception as e:
-            logger.error(f"Error in prefetch_batch: {e}")
-            return False
-        
+    
     def start_workers(self):
         """Starts the prefetching process."""
         try:
-            prefetch_thread = threading.Thread(target=self.prefetch, daemon=False, name='prefetch-thread')
+            prefetch_thread = threading.Thread(target=self.prefetch, daemon=True, name='prefetch-thread')
             prefetch_thread.start()
         except Exception as e:
             logger.error(f"Error in start_prefetching: {e}")
+
+    def prefetch(self):
+        while not self.prefetch_batches_stop_event.is_set():
+            self.token_bucket.wait_for_tokens()
+            try:
+                next_batch:Batch = next(self.batch_sampler)
+            except EndOfEpochException:
+                self.epochs[self.batch_sampler.epoch_seed].batches_finalized = True
+                self.batch_sampler.increment_epoch_seed()
+                next_batch:Batch = next(self.batch_sampler)
+            future = self.executor.submit(self.preftech_bacth, next_batch)
+            if future.result():
+                next_batch.is_cached = True
+                if next_batch.epoch_seed in self.epochs:
+                    self.epochs[next_batch.epoch_seed].add_batch(next_batch)
+                else:
+                    self.epochs[next_batch.epoch_seed] = Epoch(next_batch.epoch_seed)
+                    self.epochs[next_batch.epoch_seed].add_batch(next_batch)
+                logger.info(f"Batch {next_batch.batch_id} prefetch succeeded")
+                # self.token_bucket.batch_prefeteched(next_batch.batch_id)
+            else:
+                logger.error(f"Batch {next_batch.batch_id} prefetch failed")
     
     def create_new_job(self, job_id, data_dir):
         if job_id in self.jobs:
@@ -88,87 +71,94 @@ class SUPERCoordinator:
             success  = True   
         return success, message
     
-    def assign_epoch_to_job(self, job:MLTrainingJob):
-        if job.current_epoch_id is not None:   
-            job.processed_epochs_ids.append(job.current_epoch_id)
-        if self.active_epoch.epoch_id not in job.processed_epochs_ids:
-            job.prepare_for_new_epoch(self.active_epoch)
-        else:
-            job.prepare_for_new_epoch(self.next_epoch())
+    def allocate_epoch_to_job(self, job:MLTrainingJob):
+        if job.current_epoch is not None:   
+             job.epoch_history.append(job.current_epoch.epoch_seed)  
+        epoch:Epoch = self.epochs[list(self.epochs.keys())[-1]]
+        epoch.queue_up_batches_for_job(job.job_id)
+        job.current_epoch = epoch
+
+    def next_batch_for_job(self, job_id, num_batches_requested = 1): 
+        # get the next round of batches for processing for the given job
+        job:MLTrainingJob = self.jobs[job_id]
+        if job.current_epoch is None:
+            self.allocate_epoch_to_job(job)
+        elif job.current_epoch.batches_finalized and job.current_epoch.pending_batch_accesses[job.job_id].empty():
+            #job finished its current epoch
+            self.allocate_epoch_to_job(job)
+        
+        while job.current_epoch.pending_batch_accesses[job.job_id].qsize() < 1:
+            self.token_bucket.capacity +=10
+            time.sleep(0.1)
+            
+        num_items = min(job.current_epoch.pending_batch_accesses[job.job_id].qsize(), num_batches_requested)
+        next_batches = []
 
 
-    def next_batch_for_job(self, job_id, num_batches_requested = 1):
-        job:MLTrainingJob =  self.jobs[job_id]     
-        job.is_active = True
+        for i in range(0, num_items):
+            batch_id = job.current_epoch.pending_batch_accesses[job.job_id].get()
+            batch:Batch = job.current_epoch.batches[batch_id]
+            self.token_bucket.refill(1) if batch.is_first_access() else None
+            # self.token_bucket.batch_accessed(batch_id) #adds a new token to the bucket if the first time this batch is accessed
+            next_batches.append(batch)
+        # self.token_bucket.batch_accessed(batch_ids) #adds a new token to the bucket if the first time this batch is accessed
+        return next_batches
 
-        if job.pending_batches.size < 1: #may go back to change this to size < 2 to set up next epoch before current one ends
-            self.assign_epoch_to_job(job)
-                    
-        num_items = min(job.pending_batches.size, num_batches_requested)
-        next_bacthes = job.pending_batches[:num_items].tolist()
-        job.pending_batches = job.pending_batches[num_items:]
+    # def assign_epoch_to_job(self, job:MLTrainingJob):
+    #     if job.active_epoch is not None:   
+    #         job.epoch_seed_history.append(job.active_epoch.epoch_seed)  
+    #     if self.active_epoch.epoch_seed not in job.epoch_seed_history:
+    #         job.prepare_for_new_epoch(self.active_epoch)
+    #     else:
+    #         job.prepare_for_new_epoch(self.next_epoch())
 
-        for batch in next_bacthes:
-            self.token_bucket.batch_accessed(batch_id=batch.batch_id)
-
-        return next_bacthes
-    
+    def preftech_bacth(self, batch:Batch):
+        try:
+            event_data = {
+                'bucket_name': self.dataset.bucket_name,
+                'batch_id': batch.batch_id,
+                'batch_metadata': self.dataset.get_samples(batch.indicies),
+                }
+            #self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,event_data, True)
+            return True
+        except Exception as e:
+            logger.error(f"Error in prefetch_batch: {e}")
+            return False
+        
     def stop_workers(self):
         self.prefetch_batches_stop_event.set()
         self.executor.shutdown(wait=False)
-
-    def next_epoch(self):
-        epoch_id = len(self.epochs) + 1
-        new_epoch = Epoch(epoch_id)
-        for batch in self.batch_sampler:
-            new_epoch.add_batch(batch)
-            # self.prefetching_queue.put(batch)
-        self.epochs[epoch_id] = new_epoch
-        return self.epochs[epoch_id]
     
     def handle_job_ended(self, job_id):
         self.jobs[job_id].is_active = False
         self.deactivate_inactive_epochs()
         self.jobs.pop(job_id)
 
-    
     def deactivate_inactive_epochs(self):
-        # Collect IDs of active epochs
-        active_epoch_ids = {self.active_epoch.epoch_id}
-        for job in self.jobs.values():
-            if job.is_active and job.current_epoch_id not in active_epoch_ids:
-                active_epoch_ids.add(job.current_epoch_id)
-        # Deactivate epochs that are not active
-        for epoch in self.epochs.values():
-            epoch.is_active = epoch.epoch_id in active_epoch_ids
-
+        pass
 
 if __name__ == "__main__":
     super_args:SUPERArgs = SUPERArgs()
     coordinator = SUPERCoordinator(super_args)
-    job1 = 1
-    coordinator.create_new_job(job1,'s3://sdl-cifar10/train/')
+    # Start worker threads
+    coordinator.start_workers()
+    time.sleep(2)
+    try:
+        job1 = 1
+        coordinator.create_new_job(job1, 's3://sdl-cifar10/train/')
 
-    for i in range (0,50):
-        batch = coordinator.next_batch_for_job(job1)
-        for b in batch:
-            logger.info(f'Job {job1}, Batch_indx {i+1}, Batch_id {b.batch_id}')
-        # coordinator.run_batch_access_predictions()
-    time.sleep(4)
+        for i in range(0, 10):
+            batch = coordinator.next_batch_for_job(job1)
+            for b in batch:
+                logger.info(f'Job {job1}, Batch_index {i+1}, Batch_id {b.batch_id}')
+            time.sleep(1)
+        
+         # Infinite loop to keep the program running
+        while True:
+            # Do nothing or perform some tasks here
+            pass
 
-
-
-   # def prefetch_batches(self):
-    #     try:
-    #         while not self.prefetch_batches_stop_event.is_set():
-    #             # Batch prefetch requests for better efficiency
-    #             batch_futures = [self.executor.submit(self.invoke_prefetch_lambda, batch) for batch in self.active_epoch.batches]
-    #              # Check the status of futures as they complete
-    #             for future, batch_id in zip(batch_futures, self.active_epoch.batch_ids):
-    #                 if future.result():
-    #                     logger.info(f"Batch {batch_id} prefetch succeeded")
-    #                 else:
-    #                     logger.error(f"Batch {batch_id} prefetch failed")
-    #             self.active_epoch = self.next_epoch()
-    #     except Exception as e:
-    #          logger.error(f"Error in prefetch_new_batches: {e}")
+            # coordinator.run_batch_access_predictions()
+    finally:
+        # Stop worker threads before exiting
+        coordinator.stop_workers()

@@ -72,11 +72,11 @@ def serve(config: DictConfig):
         
         # Start data loading workers
         logger.info("Data loading workers started")
-        # coordinator.start_workers()
+        coordinator.start_workers()
 
         # Initialize and start the gRPC server
         cache_service = CacheCoordinatorService(coordinator)
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=8))
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
         cache_coordinator_pb2_grpc.add_CacheCoordinatorServiceServicer_to_server(cache_service, server)
         server.add_insecure_port('[::]:50051')
         server.start()

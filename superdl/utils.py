@@ -16,11 +16,12 @@ class TokenBucket:
         self.lock = threading.Lock()  # Lock for accessing shared resources
     
     def refill(self, tokens_to_add =1):
-        now = time.time()
-        delta_time = now - self.last_refill_time
-        # tokens_to_add = delta_time * self.refill_rate
-        self.tokens = min(self.capacity, self.tokens + tokens_to_add)
-        self.last_refill_time = now
+        with self.lock:
+            now = time.time()
+            delta_time = now - self.last_refill_time
+            # tokens_to_add = delta_time * self.refill_rate
+            self.tokens = min(self.capacity, self.tokens + tokens_to_add)
+            self.last_refill_time = now
 
     def consume(self, tokens):
         with self.lock:
@@ -30,17 +31,17 @@ class TokenBucket:
             else:
                 return False
 
-    def batch_prefeteched(self, batch_id):
-        with self.lock:
-            self.prefetched_batches.add(batch_id)
+    # def batch_prefeteched(self, batch_id):
+    #     with self.lock:
+    #         self.prefetched_batches.add(batch_id)
     
-    def batch_accessed(self, batch_id):
-        with self.lock:
-            if batch_id in self.prefetched_batches:
-                self.refill()
-                #remove so that a token only gets added to the bucket the first time the batch is accessed
-                #without this the lookahead_rate config setting would be inaccurate
-                self.prefetched_batches.remove(batch_id)
+    # def batch_accessed(self, batchs):
+    #     with self.lock:
+    #         if batch_id in self.prefetched_batches:
+    #             self.refill()
+    #             #remove so that a token only gets added to the bucket the first time the batch is accessed
+    #             #without this the lookahead_rate config setting would be inaccurate
+    #             self.prefetched_batches.remove(batch_id)
 
     def wait_for_tokens(self):
         while not self.consume(1):

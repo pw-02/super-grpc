@@ -4,71 +4,83 @@ import logging
 import sys
 import time
 import math
+from sampling import BatchSampler
 from utils import format_timestamp
 from queue import Queue
 from utils import create_unique_id, CustomQueue
 from typing import Dict, List
 from dataclasses import dataclass
 import numpy as np
+from copy import deepcopy
+import threading
 
 class Batch:
-    def __init__(self, batch_indicies):
+    def __init__(self, batch_indicies, epoch_seed):
         self.indicies: List[int] = batch_indicies
         self.batch_id:str = create_unique_id(self.indicies)
+        self.epoch_seed:int = epoch_seed
         self.is_cached:bool = False
         self.caching_in_progress:bool = False
         self.next_access_time:float = None
         self.last_access_time:float = float('inf')
-        self.parent_epoch_id:int = None
         self.job_access_times = {}  # Dictionary to store job-specific access times
-    
+        self.has_been_acessed_before = False
+        self.lock = threading.Lock()  # Lock for accessing shared resources
+
     def update_access_time(self, job_id):
         self.last_accessed_time = time.time()
         self.job_access_times[job_id] = self.last_accessed_time
-
-class Epoch:
-    def __init__(self, epoch_id:int):
-        self.epoch_id:int = epoch_id
-        self.batches: List[Batch] = []
-        self.batch_ids: List[str] = []
-        self.is_active = True
-
-    def add_batch(self, batch:Batch):
-        self.batches.append(batch)
-        self.batch_ids.append(batch.batch_id)
     
+    def is_first_access(self):
+        with self.lock:
+            if self.has_been_acessed_before:
+                return False
+            else:
+                self.has_been_acessed_before = True
+                return True
+class Epoch:
+    def __init__(self, epoch_seed:int):
+        self.epoch_seed:int = epoch_seed
+        self.batches: Dict[str, Batch] = {}
+        self.batches_finalized = False
+        self.is_active = True
+        self.pending_batch_accesses:Dict[int, Queue] = {} #job id and batch_ids queue for that job
+        # Lock for synchronization
+        self.lock = threading.Lock()
+    
+    def queue_up_batches_for_job(self, job_id):
+
+        # Acquire lock to prevent modifications to self.batches
+        with self.lock:
+            if job_id not in self.pending_batch_accesses:
+                self.pending_batch_accesses[job_id] = Queue()
+            for batch_id in self.batches.keys(): 
+                self.pending_batch_accesses[job_id].put(batch_id)
+    
+    def add_batch(self, batch: Batch):
+        # with self.lock: #lock might not be neccessery, but added for now to be safe
+            if batch.batch_id not in self.batches:
+                self.batches[batch.batch_id] = batch
+                # Add new batch to job processing queues
+                for job_id in self.pending_batch_accesses.keys():
+                    self.pending_batch_accesses[job_id].put(batch.batch_id)
+    
+
     @property
     def progress(self):
         return 
 
 class MLTrainingJob():
-    def __init__(self,job_id):
+    def __init__(self,job_id:int):
         self.job_id = job_id
-        self.current_epoch_id = None
-        self.processed_epochs_ids: List[int] = []
-        self.pending_batches = np.array([])
-        self.is_active= False
-        self.batch_processing_rate = 4 #batches/second
-        self.lookahead = 100
-    
+        self.is_active=True
+        self.processing_rate = 4
+        self.current_epoch:Epoch = None
+        self.epoch_history = []
+
     def update_batch_processing_rate(self, rate):
         self.batch_processing_rate = rate
-
-    def already_processed_epoch(self, epoch_id):
-        return epoch_id in self.processed_epochs_ids
     
-    def prepare_for_new_epoch(self, new_epoch:Epoch):  
-        self.current_epoch_id = new_epoch.epoch_id
-        
-        if len(self.pending_batches) == 0:
-            self.pending_batches = np.array(new_epoch.batches)
-        else:
-            self.pending_batches = np.append(self.pending_batches, new_epoch.batches, axis=0)
-    
-    
-
-            
-
     def predict_batch_access_time(self, batch_id):
         current_time = time.time()
         if batch_id in self.pending_batches:
@@ -88,3 +100,4 @@ class MLTrainingJob():
         # Remove the retrieved batches from pending_batches
         del self.pending_batches[:num_batches_to_retrieve]
         return next_batches
+    
