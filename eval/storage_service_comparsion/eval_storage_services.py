@@ -8,6 +8,7 @@ import boto3
 from urllib.parse import urlparse
 import json
 import multiprocessing
+from typing import List
 
 class S3Url(object):
     def __init__(self, url):
@@ -163,132 +164,142 @@ class BenchmarkRecorder:
           self.df.to_csv(filename, sep='\t', index=False, mode=mode, header=header)
           self.df.drop(self.df.index, inplace=True)  # Clear the DataFrame after writing to file
 
+
 def display_stats(objects_count,total_size_mb,elapsed_time):
-     throughput = objects_count / elapsed_time
-     bandwidth = total_size_mb / elapsed_time
-     stats_str = f"Total Objects: {objects_count}, Total Size (Mb): {total_size_mb}, Time elapsed: {elapsed_time:.4f} seconds, Throughput: {throughput:.4f} objects/s, Bandwidth: {bandwidth:.4f} MB/s"
-     print(stats_str)
+    throughput = objects_count / elapsed_time
+    bandwidth = total_size_mb / elapsed_time
+    stats_str = f"Total Objects: {objects_count}, Total Size (Mb): {total_size_mb}, Time elapsed: {elapsed_time:.4f} seconds, Throughput: {throughput:.4f} objects/s, Bandwidth: {bandwidth:.4f} MB/s"
+    print(stats_str)
 
 
-  
-def read_remote_data_s3(s3_dir, max_size_mb, max_threads =1, shuffle=False, seed_value=None, print_freq=10):
+def read_remote_data_s3(s3_dir, max_size_mb, max_threads =1, shuffle=False, print_freq=10):  
+    print(f" Started Processing. max_size_mb: {max_size_mb}, max_threads: {max_threads}, shuffle: {shuffle}, s3_dir: {s3_dir}")
+    s3_helper = S3Helper()
+    bucket_name = s3_helper.get_bucket_name(s3_dir)
+    file_list_with_sizes = s3_helper.load_object_paths(s3_dir, isImages=False, create_index=True)
 
-     print(f" Started Processing. max_size_mb: {max_size_mb}, max_threads: {max_threads}, shuffle: {shuffle}, s3_dir: {s3_dir}")
-     s3_helper = S3Helper()
-     bucket_name = s3_helper.get_bucket_name(s3_dir)
-     file_list_with_sizes = s3_helper.load_object_paths(s3_dir, isImages=False, create_index=True)
+    if shuffle:
+        random.seed(max_threads)
+        random.shuffle(file_list_with_sizes)
+        
+    # Number of items selected
+    files_to_download = []
+    total_size_mb = 0
 
-     if shuffle:
-          random.seed(max_threads)
-          random.shuffle(file_list_with_sizes)
-
-     # Number of items selected
-     files_to_download = []
-     total_size_mb = 0
-
-     # Iterate over shuffled list until total size exceeds max_size_mb
-     for file_path, file_size_bytes in file_list_with_sizes:
+    # Iterate over shuffled list until total size exceeds max_size_mb
+    for file_path, file_size_bytes in file_list_with_sizes:
           total_size_mb += file_size_bytes / (1024 * 1024)  # Convert Bytes to MB
           files_to_download.append((file_path, file_size_bytes))
           if total_size_mb >= max_size_mb:
                break
 
-     total_size_loaded_mb = 0
-     total_objects_loaded = 0
+    total_size_loaded_mb = 0
+    total_objects_loaded = 0
 
-     start_time = time.perf_counter()
-
-     with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
-          futures = {executor.submit(s3_helper.read_s3_object, bucket_name, s3_object_path[0], True): s3_object_path for s3_object_path in files_to_download}
-          # Iterate over the futures as they complete
-          for future in concurrent.futures.as_completed(futures):
-               key = futures[future]
-               try:
-                         s3_object_content, object_size_bytes = future.result()
-                         object_size_mb  = object_size_bytes / (1024 * 1024)  # Convert Bytes to MB
-                         total_size_loaded_mb += object_size_mb
-                         total_objects_loaded += 1
-                         if total_objects_loaded % print_freq == 0:  # Calculate metrics every x files
-                              elapsed_time = time.perf_counter() - start_time               
-                              display_stats(total_objects_loaded,total_size_loaded_mb,elapsed_time)        
-               except Exception as e:
+    start_time = time.perf_counter() 
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
+        futures = {executor.submit(s3_helper.read_s3_object, bucket_name, s3_object_path[0], True): s3_object_path for s3_object_path in files_to_download}
+        # Iterate over the futures as they complete
+        for future in concurrent.futures.as_completed(futures):
+            key = futures[future]
+            try:
+                s3_object_content, object_size_bytes = future.result()
+                object_size_mb  = object_size_bytes / (1024 * 1024)  # Convert Bytes to MB
+                total_size_loaded_mb += object_size_mb
+                total_objects_loaded += 1
+                if total_objects_loaded % print_freq == 0:  # Calculate metrics every x files
+                    elapsed_time = time.perf_counter() - start_time               
+                    display_stats(total_objects_loaded,total_size_loaded_mb,elapsed_time)        
+            except Exception as e:
                     print(f"Error downloading {key}: {e}")
           
-     elapsed_time = time.perf_counter() - start_time
-     display_stats(total_objects_loaded,total_size_loaded_mb,elapsed_time)
-     print(f"Reached end of file iist, Stopping.")
-     return total_objects_loaded, total_size_loaded_mb, elapsed_time, total_objects_loaded / elapsed_time, total_size_loaded_mb / elapsed_time
+    elapsed_time = time.perf_counter() - start_time
+    display_stats(total_objects_loaded,total_size_loaded_mb,elapsed_time)
+    print(f"Reached end of file iist, Stopping.")
+    return total_objects_loaded, total_size_loaded_mb, elapsed_time, total_objects_loaded / elapsed_time, total_size_loaded_mb / elapsed_time
 
-     
-def run(process_id, args, s3_dirs, num_processes =1):
-     recorder = BenchmarkRecorder(['service', 'process_id', 'thread_count', 'total_objects', 'total_size (mb)', 'elapsed_time (s)', 'throughput (objects/s)', 'bandwidth (mb/s)'])
-     local_directory = f'output2/s3/processes_{num_processes}'
-     os.makedirs(local_directory, exist_ok=True)
-     for size_mb  in args.max_size_mb:
-          for s3_dir in s3_dirs:
-               for thread_count in args.threads:    
-                    objects_count, total_size_mb, elapsed_time, throughput, bandwidth = read_remote_data_s3(
-                              s3_dir=s3_dir,
-                              max_size_mb=size_mb,
-                              max_threads = thread_count,
-                              shuffle=args.shuffle,
-                              seed_value=args.seed, 
-                              print_freq=args.print_freq)
 
-                    recorder.add_record({'service': 's3', 
-                                   'service': 's3', 
+def run_exp(process_id :int, s3_dirs:List[str], threads: List[int], max_size_mb:List[int], print_freq:int = 50, shuffle:bool = False,  num_processes:int =1):
+    recorder = BenchmarkRecorder(['service', 'process_id', 'thread_count', 'total_objects', 'total_size (mb)', 'elapsed_time (s)', 'throughput (objects/s)', 'bandwidth (mb/s)'])
+    local_directory = f'output/s3/{num_processes}_process'
+    os.makedirs(local_directory, exist_ok=True)
+    
+    for size_mb in max_size_mb:
+        for s3_dir in s3_dirs:
+            for thread_count in threads:    
+                objects_count, total_size_mb, elapsed_time, throughput, bandwidth = read_remote_data_s3(
+                    s3_dir=s3_dir,
+                    max_size_mb=size_mb,
+                    max_threads = thread_count,
+                    shuffle=shuffle,
+                    print_freq=print_freq)
+                
+                recorder.add_record(
+                                  {'service': 's3', 
+                                #    'service': 's3', 
                                    'process_id':process_id,
                                    'thread_count': thread_count,
                                    'total_objects': objects_count, 
                                    'total_size (mb)':  total_size_mb,
                                    'elapsed_time (s)': elapsed_time,
                                    'throughput (objects/s)': throughput,
-                                   'bandwidth (mb/s)': bandwidth})
-                    recorder.write(f'{local_directory}/{process_id}_s3_results.tsv')
+                                   'bandwidth (mb/s)': bandwidth}
+                                   )
+                recorder.write(f'{local_directory}/{process_id}_s3_results.tsv')
 
 def parse_arguments():
+    s3_dirs =['s3://storage.services.bench.data/0.5_10240/',
+              's3://storage.services.bench.data/1_5120/',  
+              's3://storage.services.bench.data/2_2560/',
+              's3://storage.services.bench.data/4_1280/',
+              's3://storage.services.bench.data/8_640/',
+               's3://storage.services.bench.data/16_320/',
+               's3://storage.services.bench.data/32_160/'
+               ]
+    
     parser = argparse.ArgumentParser(description="Your script description here")
-    parser.add_argument("--threads", type=int, nargs='+', default=[32], help="List of threads per process")
-    parser.add_argument("--processes", type=int, nargs='+', default=[1,2,4,8,16,32], help="List of threads per process")
-    parser.add_argument("--max_size_mb", type=int, default=[1024], help="max_size_mb")
-    parser.add_argument("--seed", type=int, default=41, help="Seed value")
-    parser.add_argument("--s3_dir", type=str, default="s3://imagenet1k-sdl/train/", help="S3 bucket name")
-    parser.add_argument("--redis_host", type=str, default=None, help="Redis host")
-    parser.add_argument("--serverless_host", type=str, default=None, help="Serverless host")
+    parser.add_argument("--threads", type=int, nargs='+', default=[1], help="Max Threads")
+    # parser.add_argument("--num_processes", type=int, nargs='+', default=1, help="Number of Processes")
+    parser.add_argument("--max_size_mb", type=int, default=[5], help="max_size_mb")
     parser.add_argument("--shuffle", action="store_true", help="Shuffle flag", default=True)
-    parser.add_argument("--print_freq", type=int, default=500000000, help="Print frequency")
-    parser.add_argument("--throttling-mode", action="store_true", help="Shuffle flag")
+    parser.add_argument("--s3_dirs", type=list, default=s3_dirs)
+    # parser.add_argument("--redis_host", type=str, default=None, help="Redis host")
+    # parser.add_argument("--serverless_host", type=str, default=None, help="Serverless host")
+    # parser.add_argument("--throttling-mode", action="store_true", help="Shuffle flag")
+    parser.add_argument("--print_freq", type=int, default=500, help="Print frequency")
     return parser.parse_args()
 
 if __name__ == "__main__":
+    
+    args = parse_arguments()
+    
+    run_exp(process_id=os.getpid(),
+            s3_dirs=args.s3_dirs,
+            threads=args.threads,
+            max_size_mb=args.max_size_mb,
+            print_freq=args.print_freq,
+            shuffle= args.shuffle,
+            num_processes=1)
+    
 
-     args = parse_arguments()
 
-     s3_dirs =['s3://storage.services.bench.data/0.5_10240/',
-               's3://storage.services.bench.data/1_5120/',  
-               's3://storage.services.bench.data/2_2560/',
-               's3://storage.services.bench.data/4_1280/',
-               's3://storage.services.bench.data/8_640/',
-               # 's3://storage.services.bench.data/16_320/',
-               # 's3://storage.services.bench.data/32_160/'
-               ]
-     
-     #run(os.getpid(),parse_arguments(),s3_dirs)
+    
+    # # run(os.getpid(),parse_arguments(),s3_dirs)
 
-     for num_processes in args.processes:
-          # Number of processes you want to spawn
-          processes = []
-          # Kick off multiple processes
-          for i in range(num_processes):
-               process = multiprocessing.Process(target=run, args=(i,parse_arguments(),s3_dirs,num_processes))
-               processes.append(process)
-               process.start()
+    # for num_processes in args.processes:
+    #       # Number of processes you want to spawn
+    #       processes = []
+    #       # Kick off multiple processes
+    #       for i in range(num_processes):
+    #            process = multiprocessing.Process(target=run, args=(i,parse_arguments(),s3_dirs,num_processes))
+    #            processes.append(process)
+    #            process.start()
           
-          # Wait for all processes to finish
-          for process in processes:
-               process.join()
+    #       # Wait for all processes to finish
+    #       for process in processes:
+    #            process.join()
      
-          print(f'All processes have finished for {num_processes}')
+    #       print(f'All processes have finished for {num_processes}')
 
 
 
