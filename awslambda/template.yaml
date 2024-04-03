@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   lambda
   Sample SAM Template for lambda
-
+  
 Globals:
   Function:
     Timeout: 50

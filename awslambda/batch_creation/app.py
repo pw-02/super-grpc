@@ -9,6 +9,7 @@ from PIL import Image
 from io import BytesIO
 import json
 import os
+
 # Externalize configuration parameters
 #REDIS_HOST = '172.17.0.2'
 #REDIS_HOST = 'host.docker.internal' #use this when testing locally on .dev container

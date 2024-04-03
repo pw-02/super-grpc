@@ -38,6 +38,12 @@ class Batch:
             else:
                 self.has_been_acessed_before = True
                 return True
+
+    def set_cache_status(self, is_cached:bool):
+        with self.lock:
+            self.is_cached = is_cached
+
+
 class Epoch:
     def __init__(self, epoch_seed:int):
         self.epoch_seed:int = epoch_seed

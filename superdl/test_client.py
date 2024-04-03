@@ -17,6 +17,11 @@ def run_unit_tests():
     register_job_response = stub.RegisterJob(cache_coordinator_pb2.RegisterJobRequest(job_id=123, data_dir='s3://sdl-cifar10/train/'))
     logger.info(f"Register Job Response: {register_job_response.job_registered}, {register_job_response.message}")
 
+    # DatasetInfo
+    data_info_response = stub.GetDatasetInfo(cache_coordinator_pb2.DatasetInfoRequest(data_dir='s3://sdl-cifar10/train/'))
+    logger.info(f"Dataset Info Response: Num Files={data_info_response.num_files}, Num Chunks={data_info_response.num_chunks}, Chunk Size={data_info_response.chunk_size} ")
+
+
     # Request next batch to process
     next_batch_response = stub.GetNextBatchToProcess(cache_coordinator_pb2.GetNextBatchRequest(job_id=123, num_batches_requested=1))
     for batch in next_batch_response.batches:
@@ -59,5 +64,6 @@ def request_batches_test(num_epochs = 2, epoch_size=50000, batches_per_request=1
     logger.info(f"Total execution time: {execution_time} seconds")
 
 if __name__ == '__main__':
+    run_unit_tests()
     request_batches_test(num_epochs = 1, epoch_size=50000, batches_per_request=1)
     

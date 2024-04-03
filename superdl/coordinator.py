@@ -9,13 +9,13 @@ from dataset import Dataset
 from job import MLTrainingJob, Epoch, Batch
 from sampling import BatchSampler, SequentialSampler, EndOfEpochException, RandomSampler
 from utils import format_timestamp,  TokenBucket, remove_trailing_slash
-from awsutils import AWSLambdaClient
+from superdl.aws_utils import AWSLambdaClient
 from queue import  Queue, Empty
 import numpy as np
 from copy import deepcopy
 
 class SUPERCoordinator:
-    
+
     def __init__(self, args:SUPERArgs):
         self.super_args: SUPERArgs = args
         self.dataset:Dataset = Dataset(self.super_args.s3_data_dir)
@@ -40,38 +40,31 @@ class SUPERCoordinator:
         while not self.prefetch_batches_stop_event.is_set():
             self.token_bucket.wait_for_tokens()
             try:
-                next_batch:Batch = next(self.batch_sampler)
+                next_batch:Batch = next(self.batch_sampler)            
             except EndOfEpochException:
                 self.epochs[self.batch_sampler.epoch_seed].batches_finalized = True
                 self.batch_sampler.increment_epoch_seed()
                 next_batch:Batch = next(self.batch_sampler)
 
-            future = self.executor.submit(self.preftech_bacth, next_batch)
-
+            future = self.executor.submit(self.preftech_bacth, next_batch) 
             try:
                 prefetch_result = future.result()
                 if prefetch_result:
-                    next_batch.is_cached = True
+                    next_batch.set_cache_status(is_cached=True)
                     epoch = self.epochs.setdefault(next_batch.epoch_seed, Epoch(next_batch.epoch_seed))
                     epoch.add_batch(next_batch)
-                    logger.info(f"Batch {next_batch.batch_id} prefetch succeeded")
+                    logger.info(f" Epoch:{epoch.epoch_seed}, Batch: {len(epoch.batches)}, Batch_Id: {next_batch.batch_id} prefetch succeeded")
                 else:
                     logger.error(f"Batch {next_batch.batch_id} prefetch failed")
             except Exception as e:
                 logger.error(f"Error prefetching batch {next_batch.batch_id}: {e}")
-                 
-            # if future.result():
-            #     next_batch.is_cached = True
-            #     if next_batch.epoch_seed in self.epochs:
-            #         self.epochs[next_batch.epoch_seed].add_batch(next_batch)
-            #     else:
-            #         self.epochs[next_batch.epoch_seed] = Epoch(next_batch.epoch_seed)
-            #         self.epochs[next_batch.epoch_seed].add_batch(next_batch)
-            #     logger.info(f"Batch {next_batch.batch_id} prefetch succeeded")
-            #     # self.token_bucket.batch_prefeteched(next_batch.batch_id)
-            # else:
-            #     logger.error(f"Batch {next_batch.batch_id} prefetch failed")
     
+    def get_dataset_info(self, data_dir):
+        num_files = len(self.dataset)
+        num_chunks = len(self.batch_sampler)
+        chunk_size = self.super_args.batch_size
+        return num_files, num_chunks, chunk_size
+        
     def create_new_job(self, job_id, data_dir):
         if job_id in self.jobs:
             message = f"Job with id '{job_id}' already registered. Skipping."
@@ -86,6 +79,7 @@ class SUPERCoordinator:
         return success, message
     
     def allocate_epoch_to_job(self, job:MLTrainingJob):
+        #consider updatign this part to be more intelligent
         if job.current_epoch is not None:   
              job.epoch_history.append(job.current_epoch.epoch_seed)  
         epoch:Epoch = self.epochs[list(self.epochs.keys())[-1]]
@@ -95,6 +89,7 @@ class SUPERCoordinator:
     def next_batch_for_job(self, job_id, num_batches_requested = 1): 
         # get the next round of batches for processing for the given job
         job:MLTrainingJob = self.jobs[job_id]
+
         if job.current_epoch is None:
             self.allocate_epoch_to_job(job)
         elif job.current_epoch.batches_finalized and job.current_epoch.pending_batch_accesses[job.job_id].empty():
@@ -107,7 +102,6 @@ class SUPERCoordinator:
             
         num_items = min(job.current_epoch.pending_batch_accesses[job.job_id].qsize(), num_batches_requested)
         next_batches = []
-
 
         for i in range(0, num_items):
             batch_id = job.current_epoch.pending_batch_accesses[job.job_id].get()
@@ -143,8 +137,16 @@ class SUPERCoordinator:
         self.jobs.pop(job_id)
 
     def deactivate_inactive_epochs(self):
+        # # Collect IDs of active epochs
+        # active_epoch_ids = {self.active_epoch.epoch_id}
+        # for job in self.jobs.values():
+        #     if job.is_active and job.current_epoch_id not in active_epoch_ids:
+        #         active_epoch_ids.add(job.current_epoch_id)
+        # # Deactivate epochs that are not active
+        # for epoch in self.epochs.values():
+        #     epoch.is_active = epoch.epoch_id in active_epoch_ids
         pass
-
+ 
 if __name__ == "__main__":
     super_args:SUPERArgs = SUPERArgs()
     coordinator = SUPERCoordinator(super_args)

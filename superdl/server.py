@@ -24,6 +24,10 @@ class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorService
         logger.info(message)
         return cache_coordinator_pb2.RegisterJobResponse(job_registered=success, message = message)
     
+    def GetDatasetInfo(self, request, context):
+        num_files, num_chunks,chunk_size =  self.coordinator.get_dataset_info(request.data_dir)
+        return cache_coordinator_pb2.DatasetInfoResponse(num_files=num_files, num_chunks=num_chunks,chunk_size=chunk_size)
+    
     def GetNextBatchToProcess(self, request, context):
         
         batches:List[Batch] = self.coordinator.next_batch_for_job(request.job_id,request.num_batches_requested)
@@ -32,7 +36,7 @@ class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorService
                                                      indicies=batch.indicies, 
                                                      is_cached=batch.is_cached) for batch in batches]
 
-        logger.info(f"Sending next {len(batches)} batches to job'{request.job_id}'")
+        # logger.info(f"Sending next {len(batches)} batches to job'{request.job_id}'")
 
         # Create and return the response
         response = cache_coordinator_pb2.GetNextBatchResponse(
@@ -76,7 +80,7 @@ def serve(config: DictConfig):
 
         # Initialize and start the gRPC server
         cache_service = CacheCoordinatorService(coordinator)
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         cache_coordinator_pb2_grpc.add_CacheCoordinatorServiceServicer_to_server(cache_service, server)
         server.add_insecure_port('[::]:50051')
         server.start()

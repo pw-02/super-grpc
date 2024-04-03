@@ -74,6 +74,7 @@ class BatchSampler:
     
     def increment_epoch_seed(self):
         self.epoch_seed +=1
+        self.sampler.current_index = 0
 
 
 if __name__ == "__main__":

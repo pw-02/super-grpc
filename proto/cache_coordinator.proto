@@ -12,7 +12,21 @@ service CacheCoordinatorService {
   rpc RegisterJob(RegisterJobRequest) returns (RegisterJobResponse);
   rpc GetNextBatchToProcess(GetNextBatchRequest) returns (GetNextBatchResponse);
   rpc JobEnded(JobEndedRequest) returns (google.protobuf.Empty);
+  rpc GetDatasetInfo(DatasetInfoRequest) returns (DatasetInfoResponse);
+
 }
+
+
+message DatasetInfoRequest {
+  string data_dir = 2;
+  }
+
+message DatasetInfoResponse {
+  int32 num_files = 1;
+  int32 num_chunks = 2;
+  int32 chunk_size = 3;
+
+  }
 
 message PingRequest {
   string message =1;

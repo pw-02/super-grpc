@@ -1,5 +1,5 @@
 from functools import cached_property
-import superdl.awsutils as awsutils
+import superdl.aws_utils as aws_utils
 from typing import List, Tuple, Dict
 import functools
 
@@ -8,10 +8,9 @@ class Dataset():
         # self.batch_size:int = batch_size
         # self.drop_last:bool = drop_last
         self.data_dir = data_dir
-        self.samples: Dict[str, List[str]] = awsutils.load_paired_s3_object_keys(data_dir, True, True)
-        self.bucket_name = awsutils.S3Url(data_dir).bucket
+        self.samples: Dict[str, List[str]] = aws_utils.load_paired_s3_object_keys(data_dir, True, True)
+        self.bucket_name = aws_utils.S3Url(data_dir).bucket
         
-    
     @functools.cached_property
     def _classed_items(self) -> List[Tuple[str, int]]:
         return [(blob, class_index)
