@@ -20,7 +20,7 @@ class SUPERCoordinator:
         self.super_args: SUPERArgs = args
         self.dataset:Dataset = Dataset(self.super_args.s3_data_dir)
         self.epochs: Dict[int, Epoch] = {}
-        self.batch_sampler:BatchSampler = BatchSampler(SequentialSampler(len(self.dataset)), self.super_args.batch_size, self.super_args.drop_last)
+        self.batch_sampler:BatchSampler = BatchSampler(RandomSampler(len(self.dataset)), self.super_args.batch_size, self.super_args.drop_last)
         self.jobs: Dict[int, MLTrainingJob] = {}
         self.lambda_client:AWSLambdaClient = AWSLambdaClient()
         self.prefetch_batches_stop_event = threading.Event()

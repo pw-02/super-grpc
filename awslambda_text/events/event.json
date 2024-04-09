@@ -1,0 +1,17 @@
+{
+  "bucket_name": "sdl-cifar10",
+  "batch_id": 1279,
+  "batch_metadata": [
+    ["train/Airplane/attack_aircraft_s_001210.png",0],
+    ["train/Airplane/attack_aircraft_s_001210.png",0],
+    ["train/Airplane/attack_aircraft_s_001210.png",0],
+    ["train/Airplane/attack_aircraft_s_001210.png",0],
+    ["train/Airplane/attack_aircraft_s_001210.png",0]
+  ],
+  "transformations": {
+    "transform_params": [
+      {"type": "Resize", "args": {"size": [224, 224]}},
+      {"type": "ToTensor", "args": {}}
+    ]
+  }
+}

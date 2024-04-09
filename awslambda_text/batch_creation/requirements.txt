@@ -1,0 +1,10 @@
+requests
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.13.1+cpu
+pillow
+boto3
+redis
+tiktoken
+unicodedata
+nltk
+random
