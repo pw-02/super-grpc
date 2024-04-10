@@ -32,50 +32,50 @@ class TTLCache:
         This method can be called periodically to maintain the set.
         """
         while True:
-            yield self.env.timeout(5)  # Call every 5 time units
+            yield self.env.timeout(2)  # Call every 5 time units
             now = self.env.now
             nearing_expiration_keys = [key for key, expiration_time in self.cache.items() if expiration_time - now <= self.ttl/2]
             self.nearing_expiration.update(nearing_expiration_keys)
 
 
-def ml_job(env: simpy.Environment, cache: TTLCache, access_pattern, training_speed):
+def ml_job(env: simpy.Environment, job_id, cache: TTLCache, access_pattern, training_speed):
     for key in access_pattern:
         yield env.timeout(training_speed)
-
         if cache.get(key):
-            print(f"Key {key} found in cache at time {env.now}")
+            print(f"Job {job_id} hit {key} in cache at time {env.now}s")
         else:
-            print(f"Key {key} not found in cache at time {env.now}")
+            print(f"Job {job_id} missed {key} in cache at time {env.now}s")
 
 def prefetcher(env: simpy.Environment, cache: TTLCache, access_pattern, lookahead_distance, rate):
     for key in access_pattern[:lookahead_distance]:
         cache.set(key)
-        print(f"Added look ahead key {key} to cache at time {env.now}")
+        print(f"Prefecther added {key} to cache at time {env.now}s")
     yield env.timeout(0)
 
     # Maintain look ahead
     for key in access_pattern[lookahead_distance:]:
         yield env.timeout(rate)
         cache.set(key)
-        print(f"Added look ahead key {key} to cache at time {env.now}")
+        print(f"Prefecther added {key} to cache at time {env.now}s")
+        
 
 if __name__ == "__main__":
     env = simpy.Environment()
-    cache = TTLCache(env, ttl=60)  # TTL set to 60 seconds
-    lookahead = 5
+    cache = TTLCache(env, ttl=4)  # TTL set to 60 seconds
+    lookahead = 2
     # Define prefetch pattern for cache users
-    prefetch_pattern = [f'key_{i}' for i in range(1, 51)]  # Example prefetch pattern with 500 keys
+    prefetch_pattern = [f'key_{i}' for i in range(1, 11)]  # Example prefetch pattern with 500 keys
     
-    job_speeds = [1]
+    job_speeds = [1,2]
 
     # Create processes for adding items to the cache and for cache users
     env.process(prefetcher(env, cache, prefetch_pattern, lookahead, min(job_speeds)))
 
-    for speed in job_speeds:
-        env.process(ml_job(env, cache, prefetch_pattern, speed))
+    for idx, speed in enumerate(job_speeds):
+        env.process(ml_job(env, idx+1, cache, prefetch_pattern, speed))
     
-    # Periodically update the nearing_expiration set in the cache
-    env.process(cache.update_nearing_expiration())
+    # #Periodically update the nearing_expiration set in the cache
+    # env.process(cache.update_nearing_expiration())
     
     # Run the simulation
     env.run()
