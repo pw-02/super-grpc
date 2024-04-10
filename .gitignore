@@ -6,3 +6,4 @@ client/src/super_client.egg-info/
 client/dist/
 client/src/super_client.egg-info/PKG-INFO
 outputs
+simulation/sim_output.csv
