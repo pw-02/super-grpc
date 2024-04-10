@@ -6,8 +6,8 @@ import os
 
 SEED = 40
 TOTAL_EPOCHS = 3
-BATCHES_PER_EPOCH = 3906
-JOB_SPEEDS = [2]
+BATCHES_PER_EPOCH = 100
+JOB_SPEEDS = [2,1]
 CACHE_TTL = 600
 PREFETCH_LOOKAHEAD = 50
 KEEP_ALIVE_INTERVAL = 60
@@ -47,12 +47,14 @@ class MLJob:
         self.epochs_processed = 0
         self.cache_hits = 0
         self.cache_misses = 0
+        self.job_ened = False
 
     @property
     def cache_hit_ratio(self):
         if self.cache_hits + self.cache_misses == 0:
             return 0
         return (self.cache_hits / (self.cache_hits + self.cache_misses)) * 100
+    
 class Batch:
     def __init__(self, batch_id):
         self.batch_id = batch_id
@@ -70,9 +72,12 @@ class Batch:
             self.last_accessed_time = time.time()
 
 class Epoch:
-    def __init__(self, epoch_id: int, batches):
+    def __init__(self, epoch_id: int, num_batches:int):
         self.epoch_id = epoch_id
-        self.batches: Dict[str, Batch] = batches
+        self.batches: Dict[str, Batch] ={}
+        for i in range(1, num_batches+1):
+            batch_id=f'batch_{epoch_id}_{i}'
+            self.batches[batch_id] = Batch(batch_id=batch_id)
         self.is_active = True
         self.pending_batch_accesses: Dict[int, List[str]] = {}  # job id and batch_ids queue for that job
 
@@ -82,23 +87,27 @@ class Epoch:
 
 
 class SimpyWrapper:
-    def __init__(self, cache: Cache, epochs, jobs, keep_alive_interval, keep_alive_threshold, lookahead, preftech_rate):
+    def __init__(self, cache: Cache, jobs, keep_alive_interval, keep_alive_threshold, lookahead, preftech_rate):
         self.cache = cache
-        self.epochs:Dict[str, Epoch] = epochs
-        self.jobs = jobs
+        self.epochs:Dict[str, Epoch] = {}
+        self.jobs:Dict[str, MLJob] = jobs
         self.keep_alive_interval = keep_alive_interval
         self.keep_alive_threshold = keep_alive_threshold
-        self.active_epoch = None
+        self.active_epoch:Epoch = None
         self.lookahead_distance= lookahead
         self.preftech_rate = preftech_rate
         self.env = simpy.Environment()
-        self.simulaton_ended = False
+        self.end_simulation = False
+        self.epoch_counter = 1
 
     def prefetch(self):
         is_first_epoch = True
-        for epoch in self.epochs.values():
-            self.active_epoch = epoch
-            epoch_batches:List[Batch] = list(epoch.batches.values())
+        while not self.end_simulation:
+            next_epoch = Epoch(self.epoch_counter, BATCHES_PER_EPOCH)
+            self.active_epoch = next_epoch
+            self.epochs[next_epoch.epoch_id] = next_epoch
+            epoch_batches:List[Batch] = list(self.active_epoch.batches.values())
+
             if is_first_epoch:
                 for batch in epoch_batches[:self.lookahead_distance]:
                     self.cache.set(batch.batch_id, self.env)
@@ -114,18 +123,25 @@ class SimpyWrapper:
                 is_first_epoch = False
             else:
                 for batch in epoch_batches:
+
                     yield self.env.timeout(self.preftech_rate)
+                    if self.end_simulation:
+                        break
                     self.cache.set(batch.batch_id,self.env)
                     print(f"Prefecther added {batch.batch_id} to cache at time {self.env.now}s")
                     batch.update_last_accessed()
-    
-    def run_ml_job(self, job: MLJob):
-        for epoch in self.epochs.values():
+                
+
+            self.epoch_counter+=1
+
+    def run_ml_job(self, job: MLJob):  
+        for idx in range(job.max_epochs):
             job.current_epoch = self.active_epoch
             job.current_epoch.queue_up_batches_for_job(job.job_id)
+            
             while len(job.current_epoch.pending_batch_accesses[job.job_id]) > 0:
                 yield self.env.timeout(job.speed)
-                
+
                 next_batch_id = job.current_epoch.pending_batch_accesses[job.job_id].pop(0)
                 next_batch: Batch = job.current_epoch.batches[next_batch_id]
 
@@ -136,98 +152,59 @@ class SimpyWrapper:
                 else:
                     job.cache_misses += 1
                     print(f"Job {job.job_id} missed {next_batch_id} in cache at time {self.env.now}s")
-                
-        
-            job.epochs_processed +=1
-
-        end_simualtion = True
-        for job in self.jobs.values():
-            if job.epochs_processed < job.max_epochs:
-                end_simualtion = False
-                break
-        self.simulaton_ended = end_simualtion
-    
-
-    # def run_ml_job(self, job: MLJob):
-    #     while job.epochs_processed < job.max_epochs:
-    #         if job.current_epoch is None:
-    #             job.current_epoch = self.active_epoch
-    #             job.current_epoch.queue_up_batches_for_job(job.job_id)
             
-    #         yield self.env.timeout(job.speed)
+        job.job_ened = True
+        end_simualtion = True
+        fastest_job_rate = float('inf')
+        for job in self.jobs.values():
+            if job.job_ened == False:
+                fastest_job_rate = min(fastest_job_rate, job.speed)
+                end_simualtion = False
+        
+        if not end_simualtion:
+            self.preftech_rate = fastest_job_rate
+        self.end_simulation = end_simualtion
 
-    #         next_batch_id = job.current_epoch.pending_batch_accesses[job.job_id].pop(0)
-    #         next_batch: Batch = job.current_epoch.batches[next_batch_id]
-
-    #         if self.cache.get(next_batch.batch_id,self.env):
-    #             job.cache_hits += 1
-    #             next_batch.update_last_accessed()
-    #             print(f"Job {job.job_id} hit {next_batch_id} in cache at time {self.env.now}s")
-    #         else:
-    #             job.cache_misses += 1
-    #             print(f"Job {job.job_id} missed {next_batch_id} in cache at time {self.env.now}s")
-
-    #         if len(job.current_epoch.pending_batch_accesses[job.job_id]) < 1:
-    #             job.epochs_processed += 1
-    #             job.current_epoch = self.active_epoch
-    #             job.current_epoch.queue_up_batches_for_job(job.job_id)
-               
-    #     end_simualtion = True
-    #     for job in self.jobs.values():
-    #         if job.epochs_processed < job.max_epochs:
-    #             end_simualtion = False
+ 
+    # def epoch_is_active(self, epoch_id):
+    #     if self.active_epoch.epoch_id == epoch_id:
+    #         return True
+    #     is_active = False
+    #     for job_id, job in self.jobs.items():
+    #         if  job.current_epoch is not None and job.current_epoch.epoch_id == epoch_id:
+    #             is_active = True
     #             break
-    #     self.simulaton_ended = end_simualtion
+    #     return is_active
     
-    def epoch_is_active(self, epoch_id):
-        if self.active_epoch.epoch_id == epoch_id:
-            return True
-        is_active = False
-        for job_id, job in self.jobs.items():
-            if  job.current_epoch is not None and job.current_epoch.epoch_id == epoch_id:
-                is_active = True
-                break
-        return is_active
+    # def get_batch_next_access_time(self, epoch_id, batch_id):
+    #     next_access_time = float('inf')  
+    #     for job_id in self.epochs[epoch_id].pending_batch_accesses:
+    #         try:
+    #             next_access_time = min(
+    #                 time.time() + self.jobs[job_id].speed * self.epochs[epoch_id].pending_batch_accesses[job_id].index(batch_id), next_access_time)
+    #         except ValueError:
+    #             pass
+    #     return next_access_time
     
-    def get_batch_next_access_time(self, epoch_id, batch_id):
-        next_access_time = float('inf')  
-        for job_id in self.epochs[epoch_id].pending_batch_accesses:
-            try:
-                next_access_time = min(
-                    time.time() + self.jobs[job_id].speed * self.epochs[epoch_id].pending_batch_accesses[job_id].index(batch_id), next_access_time)
-            except ValueError:
-                pass
-        return next_access_time
-    
-    def keep_alive_producer(self):
-       while not self.simulaton_ended:
-            yield self.env.timeout(self.keep_alive_interval)
-            for epoch_id, epoch in self.epochs.items():
-                if self.epoch_is_active(epoch.epoch_id):
-                    for batch_id, batch in epoch.batches.items():
-                        if batch.last_accessed_time is not None:
-                            time_since_last_accessed = time.time() - batch.last_accessed_time
-                            if time_since_last_accessed > self.keep_alive_threshold:
-                                next_access_time = self.get_batch_next_access_time(epoch_id, batch.batch_id)
-                                if next_access_time != float('inf'):
-                                    self.cache.set(batch.batch_id,self.env)
-                                    batch.update_last_accessed()
-
-    def keep_alive_consumer(self):
-        while True:
-            if self.keep_alive_queue.empty():
-                yield self.env.timeout(0.1)
-            else:
-                item = self.keep_alive_queue.get()
-                next_batch: Batch = item[1]
-                self.cache.set(next_batch.batch_id, next_batch.batch_id)
-                next_batch.update_last_accessed()
+    # def keep_alive_producer(self):
+    #    while not self.simulaton_ended:
+    #         yield self.env.timeout(self.keep_alive_interval)
+    #         for epoch_id, epoch in self.epochs.items():
+    #             if self.epoch_is_active(epoch.epoch_id):
+    #                 for batch_id, batch in epoch.batches.items():
+    #                     if batch.last_accessed_time is not None:
+    #                         time_since_last_accessed = time.time() - batch.last_accessed_time
+    #                         if time_since_last_accessed > self.keep_alive_threshold:
+    #                             next_access_time = self.get_batch_next_access_time(epoch_id, batch.batch_id)
+    #                             if next_access_time != float('inf'):
+    #                                 self.cache.set(batch.batch_id,self.env)
+    #                                 batch.update_last_accessed()
 
     def start(self):
         self.env.process(self.prefetch())
         for job_id, job in self.jobs.items():
             self.env.process(self.run_ml_job(job))
-        self.env.process(self.keep_alive_producer())
+        # self.env.process(self.keep_alive_producer())
         # self.env.process(self.keep_alive_consumer())
         self.env.run()
 
@@ -274,15 +251,6 @@ if __name__ == "__main__":
     
     random.seed(SEED)
     new_cache = Cache(CACHE_TTL)
-    epochs: Dict[str, Epoch] = {}
-    
-    for i in range(1, TOTAL_EPOCHS + 1):
-        batches: Dict[str, Batch] = {}
-        for y in range(BATCHES_PER_EPOCH):
-            new_batch = Batch(batch_id=f'batch_{i}_{y + 1}')
-            batches[new_batch.batch_id] = new_batch
-        new_epoch = Epoch(epoch_id=i, batches=batches)
-        epochs[i] = new_epoch
 
     jobs: Dict[str, MLJob] = {}
     for idx, speed in enumerate(JOB_SPEEDS):
@@ -291,7 +259,6 @@ if __name__ == "__main__":
 
     simpy_wrapper = SimpyWrapper(
         cache=new_cache,
-        epochs=epochs,
         jobs=jobs,
         keep_alive_interval=KEEP_ALIVE_INTERVAL,
         keep_alive_threshold=KEEP_ALIVE_THRESHOLD,
