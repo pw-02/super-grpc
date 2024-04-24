@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "superlambda"
+stack_name = "superdataloader"
 aws_region = "us-west-2"
 confirm_changeset = true
 allow_sam_cli_role_creation = true
@@ -31,9 +31,9 @@ resolve_s3 = true
 watch = false
 
 [default.local_start_api.parameters]
-#warm_containers = "EAGER"
-warm_containers = "LAZY"
+warm_containers = "EAGER"
+#warm_containers = "LAZY"
 
 [default.local_start_lambda.parameters]
-#warm_containers = "EAGER"
-warm_containers = "LAZY"
+warm_containers = "EAGER"
+#warm_containers = "LAZY"

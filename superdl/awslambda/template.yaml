@@ -3,7 +3,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   lambda
   Sample SAM Template for lambda
-  
 Globals:
   Function:
     Timeout: 50
@@ -29,10 +28,10 @@ Resources:
       Role: arn:aws:iam::590178426343:role/SIONLambdaRole
       VpcConfig:  # Add VPC configuration here
         SecurityGroupIds:
-          - sg-01e32e335c30cea50  # Replace with your security group ID
+          - sg-0e3cfe7dde2d319b2  # Replace with your security group ID
         SubnetIds:
-          - subnet-034013d4223c8fd5b  # Replace with your subnet ID
-          - subnet-0a7a885bb0a98f999  # Replace with your subnet ID
+          - subnet-0719017fb24af22ac  # Replace with your subnet ID
+          - subnet-076f5a2c0e07e6b1e  # Replace with your subnet ID
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./batch_creation
