@@ -12,3 +12,4 @@ class SUPERArgs:
     keep_alive_ping_iterval:int = 900
     max_lookahead_batches:int = 5
     max_prefetch_workers:int = 2
+    cache_address:str = None 

@@ -91,24 +91,24 @@ def lambda_handler(event, context):
     AWS Lambda handler function that processes a batch of images from an S3 bucket and caches the results in Redis.
     """
     try:
+        task = event['task']
+        if task == 'warmup':
+            return {'statusCode': 200, 'message': 'function warmed'}
+        
         bucket_name = event['bucket_name']
         batch_samples = event['batch_samples']
-        batch_id = event['batch_id']
-        task = event['warmup']
+        batch_id = event['batch_id'] 
         cache_address = event['cache_address']
         cache_host, cache_port = cache_address.split(":")
 
-        if bucket_name == 'task':
-            return {'statusCode': 200, 'message': 'function warmed'}
-        
-        elif task == 'vision_minibatch':
+        if task == 'vision':
             transformations = event.get('transformations')
              #deserailize transfor,ations
             if transformations:
                 transformations = dict_to_torchvision_transform(json.loads(transformations))
             torch_minibatch = create_minibatch(bucket_name, batch_samples, transformations)
 
-        elif task == 'text_minibatch':
+        elif task == 'language':
             transformations = event.get('transformations')
             if transformations:
                 transformations = dict_to_torchvision_transform(json.loads(transformations))

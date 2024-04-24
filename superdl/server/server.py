@@ -1,7 +1,7 @@
 import grpc
 from concurrent import futures
-import proto.cache_coordinator_pb2 as cache_coordinator_pb2
-import proto.cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
+import superdl.proto.cache_coordinator_pb2 as cache_coordinator_pb2
+import superdl.proto.cache_coordinator_pb2_grpc as cache_coordinator_pb2_grpc
 import google.protobuf.empty_pb2
 from logger_config import logger
 from coordinator import SUPERCoordinator
@@ -10,6 +10,7 @@ from omegaconf import DictConfig
 from args import SUPERArgs
 from job import Batch
 from typing import Dict, List
+import time
 
 class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorServiceServicer):
     def __init__(self, coordinator: SUPERCoordinator):
@@ -64,16 +65,19 @@ def serve(config: DictConfig):
             simulate_mode = config.simulate_mode,
             keep_alive_ping_iterval = config.keep_alive_ping_iterval,
             max_lookahead_batches = config.max_lookahead_batches,
-            max_prefetch_workers = config.max_prefetch_workers)
+            max_prefetch_workers = config.max_prefetch_workers,
+            cache_address = config.cache_address)
         
         # Create an instance of the coordinator class
         coordinator = SUPERCoordinator(args=super_args)
         
         # Warm up batch creation lambda if not in simulate mode
         if not super_args.simulate_mode:
-            logger.info("Warming up batch creation lambda..")
-            coordinator.lambda_client.warm_up_lambda()
-        
+            logger.info("Warming up batch creation lambda function..")
+            response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda) 
+            if response['StatusCode'] == 200:
+                logger.info(f"Warm up took {response['duration']:.3f}s ")
+          
         # Start data loading workers
         logger.info("Data loading workers started")
         coordinator.start_workers()

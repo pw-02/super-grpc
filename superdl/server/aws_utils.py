@@ -2,7 +2,7 @@
 import boto3
 from urllib.parse import urlparse
 import json
-import os
+import time
 from boto3.exceptions import botocore
 
 class S3Url(object):
@@ -144,20 +144,19 @@ class AWSLambdaClient():
     def invoke_function(self, function_name:str, payload, simulate:bool = False):
         if  self.lambda_client is None:
             self.lambda_client = boto3.client('lambda')
-
+        
+        start_time = time.perf_counter()
         response =  self.lambda_client.invoke(
             FunctionName=function_name,
-            #InvocationType='Event',  # Change this based on your requirements
+            InvocationType='RequestResponse',  # or 'Event' for asynchronous invocation
             Payload=payload  # Pass the required payload or input parameters
             )
+        duration = time.perf_counter() - start_time
+        response['duration'] = duration
         # response_payload = json.loads(response['Payload'].read().decode('utf-8'))
         return response
     
     def warm_up_lambda(self, function_name):
-        event_data = {'bucket_name': 'foo','batch_id': 123,'batch_metadata':'foo',}
-        response =  self.invoke_function(function_name, json.dumps(event_data), False)  # Pass the required payload or input parameters
-        if response['StatusCode'] == 200:
-            return True
-        else:
-            return False
-        
+        event_data = {'task': 'warmup'}
+        return self.invoke_function(function_name, json.dumps(event_data), False)  # Pass the required payload or input parameters
+       

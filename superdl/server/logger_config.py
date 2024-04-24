@@ -8,7 +8,7 @@ def configure_logger():
     logging.getLogger("boto3").setLevel(logging.WARNING)
     
     # Configure the root logger with a custom log format
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
+    logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
     # # Create a FileHandler and add it to the root logger
     # file_handler = logging.FileHandler('log_file.log')
