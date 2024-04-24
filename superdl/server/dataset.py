@@ -1,5 +1,5 @@
 from functools import cached_property
-import superdl.aws_utils as aws_utils
+import aws_utils as aws_utils
 from typing import List, Tuple, Dict
 import functools
 

@@ -2,6 +2,7 @@ boto3
 grpcio
 grpcio-tools
 awscli
+hydra-core
 #nlp workload
 #tiktoken
 #datasets

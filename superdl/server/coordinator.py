@@ -9,7 +9,7 @@ from dataset import Dataset
 from job import MLTrainingJob, Epoch, Batch
 from sampling import BatchSampler, SequentialSampler, EndOfEpochException, RandomSampler
 from utils import format_timestamp,  TokenBucket, remove_trailing_slash
-from superdl.aws_utils import AWSLambdaClient
+from aws_utils import AWSLambdaClient
 from queue import  Queue, Empty
 import numpy as np
 from copy import deepcopy
