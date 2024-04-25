@@ -77,13 +77,13 @@ def serve(config: DictConfig):
             response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda) 
             if response['success']:
                 logger.info(f"Warm up took {response['duration']:.3f}s")
-        
-        #coordinator.test_rate(40,8)
+        else:
+            logger.info("Running in simualtion mode")
 
         # Start data loading workers
         logger.info("Data loading workers started")
         # coordinator.prefetch()
-        coordinator.start_workers()
+        coordinator.start_prefetcher_service()
 
         # Initialize and start the gRPC server
         cache_service = CacheCoordinatorService(coordinator)

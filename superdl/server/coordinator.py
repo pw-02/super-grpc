@@ -14,7 +14,6 @@ from queue import  Queue, Empty
 import numpy as np
 from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import queue
 
 class SUPERCoordinator:
 
@@ -29,38 +28,27 @@ class SUPERCoordinator:
         self.token_bucket:TokenBucket = TokenBucket(capacity=args.max_lookahead_batches, refill_rate=0)
         self.executor = ThreadPoolExecutor(max_workers=args.max_prefetch_workers)  # Adjust max_workers as neede
         logger.info(f"Dataset Confirmed. Data Dir: {self.dataset.data_dir}, Total Files: {len(self.dataset)}, Total Batches: {len(self.batch_sampler)}")
-    
-    def start_workers(self):
+
+    def start_prefetcher_service(self):
         """Starts the prefetching process."""
         try:
             prefetch_thread = threading.Thread(target=self.prefetch, daemon=True, name='prefetch-thread')
             prefetch_thread.start()
         except Exception as e:
             logger.error(f"Error in start_prefetching: {e}")
-    
-    def prefetch(self):
-        # Number of workers in the thread pool
-        # max_workers = 10        
-        # Create a thread pool executor with the specified number of workers
-        # with ThreadPoolExecutor(max_workers=max_workers) as executor:
 
+    def prefetch(self): 
         # Process items in a loop while the stop event is not set
         while not self.prefetch_batches_stop_event.is_set():
-            # Wait for tokens before fetching the next batch
             self.token_bucket.wait_for_tokens()
             try:
-                # Get the next batch from self.batch_sampler
                 next_batch = next(self.batch_sampler)
+                self.epochs.setdefault(next_batch.epoch_seed, Epoch(next_batch.epoch_seed)).add_batch(next_batch)           
+                self.executor.submit(self.prefetch_batch, next_batch)
             except EndOfEpochException:
-                # Handle end of epoch scenario
                 self.epochs[self.batch_sampler.epoch_seed].batches_finalized = True
                 self.batch_sampler.increment_epoch_seed()
-                next_batch = next(self.batch_sampler)
-            
-            # Submit a task to process the batch asynchronously
-            self.executor.submit(self.prefetch_batch, next_batch)
-                
-    
+        
     def get_dataset_info(self, data_dir):
         num_files = len(self.dataset)
         num_chunks = len(self.batch_sampler)
@@ -81,9 +69,11 @@ class SUPERCoordinator:
         return success, message
     
     def allocate_epoch_to_job(self, job:MLTrainingJob):
-        #consider updatign this part to be more intelligent
-        if job.current_epoch is not None:   
-             job.epoch_history.append(job.current_epoch.epoch_seed)  
+
+        #find an epoch that has a high percentage of cached bacthes
+        #batches are flagged if they have not been access in 15min
+        
+
         epoch:Epoch = self.epochs[list(self.epochs.keys())[-1]]
         epoch.queue_up_batches_for_job(job.job_id)
         job.current_epoch = epoch
@@ -91,11 +81,11 @@ class SUPERCoordinator:
     def next_batch_for_job(self, job_id, num_batches_requested = 1): 
         # get the next round of batches for processing for the given job
         job:MLTrainingJob = self.jobs[job_id]
-
         if job.current_epoch is None:
             self.allocate_epoch_to_job(job)
         elif job.current_epoch.batches_finalized and job.current_epoch.pending_batch_accesses[job.job_id].empty():
             #job finished its current epoch
+            job.epoch_history.append(job.current_epoch.epoch_seed)  
             self.allocate_epoch_to_job(job)
         
         while job.current_epoch.pending_batch_accesses[job.job_id].qsize() < 1:
@@ -115,7 +105,9 @@ class SUPERCoordinator:
         return next_batches
 
 
-    def prefetch_batch(self, next_batch:Batch):
+    def prefetch_batch(self, next_batch:Batch, attempt = 1):
+        if attempt >  5:
+            return True
         try:
             payload = {
                 'bucket_name': self.dataset.bucket_name,
@@ -124,18 +116,16 @@ class SUPERCoordinator:
                 'task':'vision',
                 'cache_address': self.super_args.cache_address
                 }
-            response = self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,json.dumps(payload))
-            
+            response = self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,json.dumps(payload), self.super_args.simulate_mode)
+
             if response['success'] == True:
                 # logger.info(f"{response['message']}. Request Duration: {response['duration']:.3f}s")
                 logger.info(f"Cached Batch_Id: {next_batch.batch_id}, Request Duration: {response['duration']:.3f}s")
                 next_batch.set_cache_status(is_cached=True)
-                epoch = self.epochs.setdefault(next_batch.epoch_seed, Epoch(next_batch.epoch_seed))
-                epoch.add_batch(next_batch)
             else:
-                logger.info(f" Failed to cache  Batch_Id: {next_batch.batch_id}, Message: {response['message']}, Request Duration: {response['duration']:.3f}s")
-                self.prefetch_batch(next_batch)
-
+                logger.info(f" Failed to cache  Batch_Id: {next_batch.batch_id}, Message: {response['message']}, Request Duration: {response['duration']:.3f}s, Attempt: {attempt}")
+                attempt +=1
+                self.prefetch_batch(next_batch,attempt)
             return True
         except Exception as e:
             logger.error(f"Error in prefetch_batch: {e}")

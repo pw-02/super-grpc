@@ -31,3 +31,18 @@ class Dataset():
         print("Summary of Dataset:")
         print("Data Directory:", self.data_dir)
         print("Total Files:", len(self))
+
+class DatasetPartition():
+    def __init__(self, data_dir:str):
+        # self.batch_size:int = batch_size
+        # self.drop_last:bool = drop_last
+        self.samples: Dict[str, List[str]] = aws_utils.load_paired_s3_object_keys(data_dir, True, True)
+        self.bucket_name = aws_utils.S3Url(data_dir).bucket
+        self.epochs = {}
+
+    @functools.cached_property
+    def _classed_items(self) -> List[Tuple[str, int]]:
+        return [(blob, class_index)
+                for class_index, blob_class in enumerate(self.samples)
+                for blob in self.samples[blob_class]]
+        

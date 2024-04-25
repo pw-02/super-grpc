@@ -50,12 +50,10 @@ class Epoch:
         self.batches: Dict[str, Batch] = {}
         self.batches_finalized = False
         self.is_active = True
-        self.pending_batch_accesses:Dict[int, Queue] = {} #job id and batch_ids queue for that job
-        # Lock for synchronization
+        self.pending_batch_accesses:Dict[int, Queue] = {} #job id and queue of batches for that job
         self.lock = threading.Lock()
     
     def queue_up_batches_for_job(self, job_id):
-
         # Acquire lock to prevent modifications to self.batches
         with self.lock:
             if job_id not in self.pending_batch_accesses:
@@ -64,17 +62,12 @@ class Epoch:
                 self.pending_batch_accesses[job_id].put(batch_id)
     
     def add_batch(self, batch: Batch):
-        # with self.lock: #lock might not be neccessery, but added for now to be safe
+        with self.lock: #lock might not be neccessery, but added for now to be safe
             if batch.batch_id not in self.batches:
                 self.batches[batch.batch_id] = batch
                 # Add new batch to job processing queues
                 for job_id in self.pending_batch_accesses.keys():
                     self.pending_batch_accesses[job_id].put(batch.batch_id)
-    
-
-    @property
-    def progress(self):
-        return 
 
 class MLTrainingJob():
     def __init__(self,job_id:int):

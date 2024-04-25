@@ -141,21 +141,23 @@ class AWSLambdaClient():
     def __init__(self):
         self.lambda_client = None
     
-    def invoke_function(self, function_name:str, payload):
-        if  self.lambda_client is None:
-            self.lambda_client = boto3.client('lambda')
-        
+    def invoke_function(self, function_name:str, payload, simulate = False):
         start_time = time.perf_counter()
-        response =  self.lambda_client.invoke(
-            FunctionName=function_name,
-            InvocationType='RequestResponse',  # or 'Event' for asynchronous invocation
-            Payload=payload  # Pass the required payload or input parameters
-            )
-        duration = time.perf_counter() - start_time
-        message = json.loads(response['Payload'].read().decode('utf-8'))
-        response['duration'] = duration
-        response['success'] = message['success']
-        response['message'] = message['message']
+        if simulate:
+            time.sleep(0.9)
+            response ={}
+            response['duration'] = time.perf_counter() - start_time
+            response['message'] = ""
+            response['success'] = True
+        else:
+            if  self.lambda_client is None:
+                self.lambda_client = boto3.client('lambda') 
+
+            response = self.lambda_client.invoke(FunctionName=function_name,InvocationType='RequestResponse',Payload=payload)
+            response_data = json.loads(response['Payload'].read().decode('utf-8'))
+            response['duration'] = time.perf_counter() - start_time
+            response['success'] = response_data['success']
+            response['message'] = response_data['message']
         return response
     
     def warm_up_lambda(self, function_name):
