@@ -141,5 +141,5 @@ def lambda_handler(event, context):
             'success': False,
             'batch_id': batch_id,
             'is_cached': False,
-             'message': f"Failed to create minibatch '{batch_id}'. Error: {str(e)}"
+            'message': f"{str(e)}"
         }

@@ -78,10 +78,11 @@ def serve(config: DictConfig):
             if response['success']:
                 logger.info(f"Warm up took {response['duration']:.3f}s")
         
-        coordinator.test_rate(40,8)
+        #coordinator.test_rate(40,8)
 
         # Start data loading workers
         logger.info("Data loading workers started")
+        # coordinator.prefetch()
         coordinator.start_workers()
 
         # Initialize and start the gRPC server

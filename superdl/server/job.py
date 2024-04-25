@@ -15,9 +15,9 @@ from copy import deepcopy
 import threading
 
 class Batch:
-    def __init__(self, batch_indicies, epoch_seed):
+    def __init__(self, batch_indicies, epoch_seed, idx):
         self.indicies: List[int] = batch_indicies
-        self.batch_id:str = create_unique_id(self.indicies)
+        self.batch_id:str = f"{epoch_seed}_{idx}_{create_unique_id(self.indicies)}" #create_unique_id(self.indicies)
         self.epoch_seed:int = epoch_seed
         self.is_cached:bool = False
         self.caching_in_progress:bool = False

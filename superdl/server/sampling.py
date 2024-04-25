@@ -67,10 +67,10 @@ class BatchSampler:
                 batch.append(idx)
                 if len(batch) == self.batch_size:
                     self.current_index += 1
-                    return job.Batch(batch, self.epoch_seed)
+                    return job.Batch(batch, self.epoch_seed, self.current_index)
             if len(batch) > 0 and not self.drop_last:
                 self.current_index += 1
-                return job.Batch(batch, self.epoch_seed)
+                return job.Batch(batch, self.epoch_seed, self.current_index)
             raise EndOfEpochException
         else:
             self.current_index = 0  # Reset index for the next epoch
