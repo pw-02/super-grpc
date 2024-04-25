@@ -8,6 +8,7 @@ torch
 torchvision
 twine
 build
+pandas
 #nlp workload
 #tiktoken
 #datasets

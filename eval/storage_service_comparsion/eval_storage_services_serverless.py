@@ -39,8 +39,6 @@ def serverless_fetch(key):
     return redis_client.get(key)
 
 
-
-
 def read_remote_data_serverless(max_size_mb, file_keys:List[str], max_threads =1, shuffle=False,  print_freq=10):
     
     # print(f" Started Processing. max_size_mb: {max_size_mb}, max_threads: {max_threads}, shuffle: {shuffle}")

@@ -13,7 +13,7 @@ createbatchfunction_authentication = true
 save_arguments = false
 
 [default.build.parameters]
-cached = true
+cached = false
 parallel = true
 
 [default.validate.parameters]
@@ -21,9 +21,12 @@ lint = true
 
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"  # Add CAPABILITY_NAMED_IAM here
-confirm_changeset = true
+confirm_changeset = false
 resolve_s3 = true
-
+s3_prefix = "superdataloader"
+region = "us-west-2"
+image_repositories = ["CreateBatchFunction=590178426343.dkr.ecr.us-west-2.amazonaws.com/superdataloaderc0e05835/createbatchfunctiona9a93187repo"]
+# force_upload = true
 [default.package.parameters]
 resolve_s3 = true
 

@@ -2,25 +2,25 @@ import base64
 import json
 import zlib
 import concurrent.futures
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from io import BytesIO
-
 import boto3
 import redis
 import torch
 import torchvision
 from PIL import Image
-
+from queue import Queue, Empty
 # Externalize configuration parameters
 #REDIS_HOST = '172.17.0.2'
 #REDIS_HOST = 'host.docker.internal' #use this when testing locally on .dev container
 #REDIS_PORT = 6379
 
 # Configuration parameters
-REDIS_HOST = "10.0.29.229"
-REDIS_PORT = 6378
-S3_CLIENT = boto3.client('s3')
-REDIS_CLIENT = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT) # Instantiate Redis client
+# REDIS_HOST = "localhost"
+# REDIS_PORT = 6379
+s3_client = None
+redis_client = None
+
 
 def dict_to_torchvision_transform(transform_dict):
     """
@@ -43,11 +43,10 @@ def is_image_file(path: str):
     return any(path.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP'])
     
 def get_data_sample(bucket_name, data_sample,transformations):
-    if S3_CLIENT is None:
-        S3_CLIENT = boto3.client('s3')
+
 
     sample_path, sample_label = data_sample
-    obj = S3_CLIENT.get_object(Bucket=bucket_name, Key=sample_path)
+    obj = s3_client.get_object(Bucket=bucket_name, Key=sample_path)
 
     if is_image_file(sample_path):
         content = obj['Body'].read()
@@ -62,7 +61,7 @@ def get_data_sample(bucket_name, data_sample,transformations):
     else:
         return torchvision.transforms.ToTensor()(content), sample_label
 
-def create_minibatch(bucket_name, samples, transformations = None):
+def create_minibatch(bucket_name, samples, transformations):
     sample_data, sample_labels = [], []
     with ThreadPoolExecutor() as executor:
         futures = {executor.submit(get_data_sample, bucket_name, sample, transformations): sample for sample in samples}
@@ -86,6 +85,12 @@ def create_minibatch(bucket_name, samples, transformations = None):
     # Encode the serialized tensor with base64
     minibatch = base64.b64encode(minibatch).decode('utf-8')
 
+    return minibatch
+
+# Define a timeout handler function
+def timeout_handler(signum, frame):
+    raise TimeoutError("Redis set operation timed out")
+
 def lambda_handler(event, context):
     """
     AWS Lambda handler function that processes a batch of images from an S3 bucket and caches the results in Redis.
@@ -93,42 +98,48 @@ def lambda_handler(event, context):
     try:
         task = event['task']
         if task == 'warmup':
-            return {'statusCode': 200, 'message': 'function warmed'}
-        
+            return {'success': True, 'message': 'function warmed'}
+         
         bucket_name = event['bucket_name']
         batch_samples = event['batch_samples']
         batch_id = event['batch_id'] 
         cache_address = event['cache_address']
+        # transformations = event['transformations']
+        transformations =  None
         cache_host, cache_port = cache_address.split(":")
 
+        global s3_client, redis_client
+
+        if s3_client is None:
+            s3_client = boto3.client('s3')
+
+        if redis_client is None:
+            redis_client = redis.StrictRedis(host=cache_host, port=cache_port) # Instantiate Redis client
+           
         if task == 'vision':
-            transformations = event.get('transformations')
              #deserailize transfor,ations
             if transformations:
                 transformations = dict_to_torchvision_transform(json.loads(transformations))
             torch_minibatch = create_minibatch(bucket_name, batch_samples, transformations)
 
-        elif task == 'language':
-            transformations = event.get('transformations')
-            if transformations:
-                transformations = dict_to_torchvision_transform(json.loads(transformations))
-            torch_minibatch = create_minibatch(bucket_name, batch_samples, transformations)
-
-        if REDIS_CLIENT is None:
-            REDIS_CLIENT = redis.StrictRedis(host=cache_host, port=cache_port) # Instantiate Redis client
+        # elif task == 'language':
+        #     transformations = event.get('transformations')
+        #     if transformations:
+        #         transformations = dict_to_torchvision_transform(json.loads(transformations))
+        #     torch_minibatch = create_minibatch(bucket_name, batch_samples, transformations)
 
         # Cache minibatch in Redis using batch_id as the key
-        REDIS_CLIENT.set(batch_id, torch_minibatch)
-        
-        return {'statusCode': 200,
-                'batch_id': batch_id,
-                'is_cached': True,
-                'message':  f" Sucessfully cached mininbatch '{batch_id}'"
-                }
-    except Exception as e:
+        redis_client.set(batch_id, torch_minibatch)
         return {
-            'statusCode': 500,
+            'success': True,
+            'batch_id': batch_id,
+            'is_cached': True,
+            'message': f"Successfully cached minibatch '{batch_id}'"
+            }
+    except Exception as e:
+       return {
+            'success': False,
             'batch_id': batch_id,
             'is_cached': False,
-            'message': f"Failed to create mininbatch '{batch_id}'. Error: {str(e)}"
+             'message': f"Failed to create minibatch '{batch_id}'. Error: {str(e)}"
         }

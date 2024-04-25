@@ -46,7 +46,7 @@ class SUPERCoordinator:
                 self.batch_sampler.increment_epoch_seed()
                 next_batch:Batch = next(self.batch_sampler)
 
-            future = self.executor.submit(self.preftech_bacth, next_batch) 
+            future = self.executor.submit(self.prefetch_bacth, next_batch) 
             try:
                 prefetch_result = future.result()
                 if prefetch_result:
@@ -113,15 +113,20 @@ class SUPERCoordinator:
         return next_batches
 
 
-    def preftech_bacth(self, batch:Batch):
+    def prefetch_bacth(self, batch:Batch):
         try:
-            event_data = {
+            payload = {
                 'bucket_name': self.dataset.bucket_name,
                 'batch_id': batch.batch_id,
-                'batch_metadata': self.dataset.get_samples(batch.indicies),
+                'batch_samples': self.dataset.get_samples(batch.indicies),
+                'task':'vision',
+                'cache_address': self.super_args.cache_address
                 }
-            time.sleep(0.02)
-            #self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,event_data, True)
+            #time.sleep(0.02)
+            response = self.lambda_client.invoke_function(self.super_args.batch_creation_lambda,json.dumps(payload))
+            #if response['StatusCode'] == 500:
+            logger.info(f"{response['message']}. Request Duration: {response['duration']:.3f}s")
+
             return True
         except Exception as e:
             logger.error(f"Error in prefetch_batch: {e}")
@@ -146,6 +151,40 @@ class SUPERCoordinator:
         # for epoch in self.epochs.values():
         #     epoch.is_active = epoch.epoch_id in active_epoch_ids
         pass
+
+    def test_rate(self, num_items_to_process = 10, num_workers = 10):
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        # Use a thread pool to invoke the Lambda function for each item in the iterator
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            start_time = time.time()            
+            # Create a list to hold the futures (tasks)
+            futures = []
+            item_count = 0  # Initialize item count
+            for item in self.batch_sampler:
+                # Submit a task to invoke the Lambda function for the current item
+                futures.append(executor.submit(self.prefetch_bacth, item))
+                item_count += 1
+                # Stop processing once 40 items have been processed
+                if item_count >= num_items_to_process:
+                    break
+            # Collect results as they complete
+            for future in as_completed(futures):
+                result = future.result()
+                # Optionally, process the result further if needed
+                print(f"Lambda response: {result}")
+            
+            # End timing
+            end_time = time.time()
+            
+        # Calculate elapsed time
+        elapsed_time = end_time - start_time
+
+        # Print the elapsed time
+        print(f"Elapsed time for processing {num_items_to_process} items from the iterator: {elapsed_time:.2f} seconds")
+
+
+       
  
 if __name__ == "__main__":
     super_args:SUPERArgs = SUPERArgs()

@@ -32,18 +32,17 @@ if __name__ == "__main__":
     s3_bucket_name = "storage.services.bench.data"
     if upload_to_redis:
         # Redis connection
-        redis_host = 't.rdior4.ng.0001.usw2.cache.amazonaws.com'
-        redis_port = 6379
-        redis_db = 0
-        redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
+        redis_host = '34.221.25.251'
+        redis_port = '6378'
+        redis_client = redis.StrictRedis(host=redis_host, port=redis_port)
     
     # Total upload size
-    total_upload_size_gb = 3  # Total upload size in GB
+    total_upload_size_gb = 300  # Total upload size in GB
     total_upload_size_mb = total_upload_size_gb * 1024  # Convert GB to MBls
     
     # List of file sizes to upload (in MB)
     # [1,4,8,16,32,64]
-    file_sizes_mb = [1,4,8,16,32,64]  # Add more sizes as needed
+    file_sizes_mb = [512]  # Add more sizes as needed
     
     # Calculate the number of uploads needed to reach the total upload size
     num_uploads = {}
@@ -51,7 +50,7 @@ if __name__ == "__main__":
         num_uploads[file_size_mb] = int(total_upload_size_mb / file_size_mb)
 
     for file_size_mb, uploads in num_uploads.items():
-        #file_content = etvalue((file_size_mb)
+        file_content = create_file_content(file_size_mb)
         # local_directory = f'{file_size_mb}_{uploads}'
         # os.makedirs(local_directory, exist_ok=True)
         file_keys = []
@@ -62,7 +61,7 @@ if __name__ == "__main__":
             if upload_to_redis:
                 file_key = f'test_file_{file_size_mb}mb_{i}.txt'
                 file_keys.append(file_key)
-                #redis_client.set(file_key, file_content.getvalue())
+                redis_client.set(file_key, file_content.getvalue())
                 print(file_key)
         # Write the JSON string to a file
         with open(f'{file_size_mb}mb_file_keys.json', 'w') as json_file:

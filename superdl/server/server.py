@@ -75,9 +75,11 @@ def serve(config: DictConfig):
         if not super_args.simulate_mode:
             logger.info("Warming up batch creation lambda function..")
             response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda) 
-            if response['StatusCode'] == 200:
-                logger.info(f"Warm up took {response['duration']:.3f}s ")
-          
+            if response['success']:
+                logger.info(f"Warm up took {response['duration']:.3f}s")
+        
+        coordinator.test_rate(40,8)
+
         # Start data loading workers
         logger.info("Data loading workers started")
         coordinator.start_workers()
