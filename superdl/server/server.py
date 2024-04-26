@@ -8,7 +8,7 @@ from coordinator import SUPERCoordinator
 import hydra
 from omegaconf import DictConfig
 from args import SUPERArgs
-from job import Batch
+from batch import Batch
 from typing import Dict, List
 import time
 
@@ -66,7 +66,9 @@ def serve(config: DictConfig):
             keep_alive_ping_iterval = config.keep_alive_ping_iterval,
             max_lookahead_batches = config.max_lookahead_batches,
             max_prefetch_workers = config.max_prefetch_workers,
-            cache_address = config.cache_address)
+            cache_address = config.cache_address,
+            shuffle=config.shuffle,
+            num_dataset_partitions =config.num_dataset_partitions)
         
         # Create an instance of the coordinator class
         coordinator = SUPERCoordinator(args=super_args)
@@ -87,7 +89,7 @@ def serve(config: DictConfig):
 
         # Initialize and start the gRPC server
         cache_service = CacheCoordinatorService(coordinator)
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
         cache_coordinator_pb2_grpc.add_CacheCoordinatorServiceServicer_to_server(cache_service, server)
         server.add_insecure_port('[::]:50051')
         server.start()

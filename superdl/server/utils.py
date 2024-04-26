@@ -5,12 +5,15 @@ from queue import Queue
 import threading
 import threading
 from queue import Empty
+from typing import Any, Dict
+import random
 
 class TokenBucket:
     def __init__(self, capacity, refill_rate):
         self.capacity = capacity
         self.tokens = capacity
         self.refill_rate = refill_rate
+        self.refill_count  =0
         self.last_refill_time = time.time()
         self.prefetched_batches = set()  # Keep track of downloaded/prefecthed bacthes
         self.lock = threading.Lock()  # Lock for accessing shared resources
@@ -22,6 +25,7 @@ class TokenBucket:
             # tokens_to_add = delta_time * self.refill_rate
             self.tokens = min(self.capacity, self.tokens + tokens_to_add)
             self.last_refill_time = now
+            self.refill_count +=1
 
     def consume(self, tokens):
         with self.lock:
@@ -45,7 +49,7 @@ class TokenBucket:
 
     def wait_for_tokens(self):
         while not self.consume(1):
-            time.sleep(0.1)  # Wait if there are not enough tokens available
+            time.sleep(0.01)  # Wait if there are not enough tokens available
             # token_bucket.refill()  # Refill tokens during the wait
     
 
@@ -109,3 +113,45 @@ def remove_trailing_slash(path:str):
     if path.endswith('\\'):
         return path[:-1]  # Remove the last character (trailing slash)
     return path
+
+def partition_dict(original_dict: Dict[Any, Any], num_partitions, batch_size):
+   # Initialize a list to hold the partitions
+    partitions = [{} for _ in range(num_partitions)]
+    
+    # Iterate through each key and its associated list of values in the original dictionary
+    for key, values in original_dict.items():
+        # Calculate the total number of values
+        total_values = len(values)
+        
+        # Calculate the base partition size such that it is divisible by 128
+        base_partition_size = (total_values // num_partitions) // 128 * 128
+        
+        # Calculate the remaining values that should be evenly distributed across partitions
+        remaining_values = total_values - base_partition_size * num_partitions
+        
+        # Initialize the starting index for the partitions
+        start_index = 0
+        
+        # Distribute the list of values across partitions
+        for i in range(num_partitions):
+            # Determine the size of the current partition
+            if i < remaining_values:
+                # If there are remaining values, add one additional base size (128) to this partition
+                partition_size = base_partition_size + 128
+            else:
+                # Otherwise, use the base partition size
+                partition_size = base_partition_size
+            
+            # Calculate the end index for the current partition
+            end_index = min(start_index + partition_size, total_values)
+            
+            # Get the subset of values for the current partition
+            subset_values = values[start_index:end_index]
+            
+            # Add the key and subset of values to the current partition dictionary
+            partitions[i][key] = subset_values
+            
+            # Update the start index for the next partition
+            start_index = end_index
+    
+    return partitions

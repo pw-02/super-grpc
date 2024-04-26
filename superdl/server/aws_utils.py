@@ -144,7 +144,7 @@ class AWSLambdaClient():
     def invoke_function(self, function_name:str, payload, simulate = False):
         start_time = time.perf_counter()
         if simulate:
-            time.sleep(0.9)
+            time.sleep(0.01)
             response ={}
             response['duration'] = time.perf_counter() - start_time
             response['message'] = ""

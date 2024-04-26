@@ -13,3 +13,5 @@ class SUPERArgs:
     max_lookahead_batches:int = 5
     max_prefetch_workers:int = 2
     cache_address:str = None 
+    shuffle:str = True
+    num_dataset_partitions:int = 1
