@@ -89,7 +89,7 @@ def serve(config: DictConfig):
 
         # Initialize and start the gRPC server
         cache_service = CacheCoordinatorService(coordinator)
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
         cache_coordinator_pb2_grpc.add_CacheCoordinatorServiceServicer_to_server(cache_service, server)
         server.add_insecure_port('[::]:50051')
         server.start()

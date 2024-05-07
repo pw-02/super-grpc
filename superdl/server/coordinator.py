@@ -28,7 +28,6 @@ class SUPERCoordinator:
         self.prefetch_batches_stop_event = threading.Event()
         self.token_bucket:TokenBucket = TokenBucket(capacity=args.max_lookahead_batches, refill_rate=0)
         self.executor = ThreadPoolExecutor(max_workers=args.max_prefetch_workers)  # Adjust max_workers as neede
-
         logger.info(f"Dataset Confirmed. Data Dir: {self.dataset.data_dir}, Files: {len(self.dataset)}, Batches: {self.dataset.num_batches}, Partitions: {len(self.dataset.partitions)}")
 
     def start_prefetcher_service(self):
@@ -45,10 +44,8 @@ class SUPERCoordinator:
         while not self.prefetch_batches_stop_event.is_set():
             epoch_idx += 1
             for partition_id, partition in self.dataset.partitions.items():
-                # self.token_bucket.wait_for_tokens()
                 self.active_partition_epoch = Epoch(f'{epoch_idx}_{partition_id}', partition_id)
                 self.partition_epochs.setdefault(partition.partition_id, []).append(self.active_partition_epoch)
-                # Create a batch sampler for the partition
                 batch_sampler = BatchSampler(len(partition), self.args.batch_size, self.active_partition_epoch.epoch_id, self.args.shuffle, self.args.drop_last)
                 # Process batches until the end of the epoch
                 while True:
@@ -60,12 +57,10 @@ class SUPERCoordinator:
                         self.executor.submit(self.prefetch_batch, next_batch)
                     except EndOfEpochException:
                         # End of epoch, break the loop
-                       
                         break
                 # Mark the active epoch as finalized
                 self.active_partition_epoch.batches_finalized = True
-                self.token_bucket.refill(1) 
-                # Add the active epoch to the partition_epochs dictionary using setdefault
+                self.token_bucket.refill(1) #refill here because the pevious token wasn't used due to end of epoch
 
     def create_new_job(self, job_id, data_dir):
         if job_id in self.jobs:
@@ -80,14 +75,6 @@ class SUPERCoordinator:
             success  = True   
         return success, message
     
-    # def allocate_epoch_to_job(self, job:MLTrainingJob):
-
-    #     #find an epoch that has a high percentage of cached bacthes
-    #     #batches are flagged if they have not been access in 15min
-    #     epoch:Epoch = self.epochs[list(self.epochs.keys())[-1]]
-    #     epoch.queue_up_batches_for_job(job.job_id)
-    #     job.current_epoch = epoch
-
     def allocate_next_partition_epoch_to_job(self, job: MLTrainingJob):
         # Check if there are no epochs remaining in the job
         if len(job.partition_epochs_remaining) == 0:
@@ -124,10 +111,9 @@ class SUPERCoordinator:
                 raise ValueError("No suitable partition epoch found.")
 
 
-
     def next_batch_for_job(self, job_id, num_batches_requested = 1): 
         job:MLTrainingJob = self.jobs[job_id]
-
+        job.update_batch_processing_rate()
         if job.current_partition_epoch is None:
             self.allocate_next_partition_epoch_to_job(job)
         
@@ -139,9 +125,9 @@ class SUPERCoordinator:
 
         while job.current_partition_epoch.pending_batch_accesses[job.job_id].qsize() < 1:
             # self.token_bucket.capacity +=10
-            print('hit')
+            # print('hit')
             time.sleep(0.01)
-            
+
         num_items = min(job.current_partition_epoch.pending_batch_accesses[job.job_id].qsize(), num_batches_requested)
         next_batches = []
 
@@ -150,12 +136,10 @@ class SUPERCoordinator:
             batch:Batch = job.current_partition_epoch.batches[batch_id]
             if batch.is_first_access():
               self.token_bucket.refill(1) 
-            else:
-                None
+        
             next_batches.append(batch)
         return next_batches
-
-            
+           
     def get_dataset_info(self, data_dir):
         num_files = len(self.dataset)
         num_chunks = self.dataset.num_batches
@@ -177,7 +161,7 @@ class SUPERCoordinator:
 
             if response['success'] == True:
                 # logger.info(f"{response['message']}. Request Duration: {response['duration']:.3f}s")
-                logger.info(f"Cached Batch_Id: {next_batch.batch_id}, Request Duration: {response['duration']:.3f}s")
+                # logger.info(f"Cached Batch_Id: {next_batch.batch_id}, Request Duration: {response['duration']:.3f}s")
                 next_batch.set_cache_status(is_cached=True)
             else:
                 logger.info(f" Failed to cache  Batch_Id: {next_batch.batch_id}, Message: {response['message']}, Request Duration: {response['duration']:.3f}s, Attempt: {attempt}")
@@ -208,7 +192,7 @@ class SUPERCoordinator:
         #     epoch.is_active = epoch.epoch_id in active_epoch_ids
         pass
 
-    def test_rate(self, num_items_to_process = 10, num_workers = 10):
+    def test_prefetch_rate(self, num_items_to_process = 10, num_workers = 10):
         from concurrent.futures import ThreadPoolExecutor, as_completed
 
         # Use a thread pool to invoke the Lambda function for each item in the iterator

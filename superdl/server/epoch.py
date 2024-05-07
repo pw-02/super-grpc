@@ -28,5 +28,5 @@ class Epoch:
                 # Add new batch to job processing queues
                 for job_id in self.pending_batch_accesses.keys():
                     self.pending_batch_accesses[job_id].put(batch.batch_id)
-            else:
-                pass
+    
+                    

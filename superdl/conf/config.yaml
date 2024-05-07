@@ -16,4 +16,4 @@ batch_creation_lambda: 'superdataloader-CreateBatchFunction-WlTEivefOYJK'
 testing_locally: False
 sam_local_url: 'http://localhost:3000'
 sam_local_endpoint: '/create_batch'
-num_dataset_partitions: 1
+num_dataset_partitions: 10
