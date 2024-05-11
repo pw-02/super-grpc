@@ -53,7 +53,7 @@ class CacheCoordinatorService(cache_coordinator_pb2_grpc.CacheCoordinatorService
 
        
 
-@hydra.main(version_base=None, config_path="../../conf", config_name="config")
+@hydra.main(version_base=None, config_path="../conf", config_name="config")
 def serve(config: DictConfig):
     try:
         logger.info("Starting SUPER Datloading Service")   
