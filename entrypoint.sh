@@ -8,7 +8,7 @@
 
 # Start the grpc service
 
-git clone https://github.com/pw-02/super-grpc.git
+git clone -b v2 https://github.com/pw-02/super-grpc.git
 
 cd super-grpc/server
 # Start an interactive shell
