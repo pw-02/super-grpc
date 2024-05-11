@@ -10,6 +10,8 @@ import torch
 import torchvision
 from PIL import Image
 from queue import Queue, Empty
+import torchvision.transforms as transforms
+
 # Externalize configuration parameters
 #REDIS_HOST = '172.17.0.2'
 #REDIS_HOST = 'host.docker.internal' #use this when testing locally on .dev container
@@ -41,7 +43,21 @@ def dict_to_torchvision_transform(transform_dict):
 
 def is_image_file(path: str):
     return any(path.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP'])
-    
+
+
+def transform():
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], 
+        std=[0.229, 0.224, 0.225],
+    )
+    return transforms.Compose([
+        transforms.RandomResizedCrop(224),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        normalize,
+    ])
+
+
 def get_data_sample(bucket_name, data_sample,transformations):
 
 
@@ -59,6 +75,7 @@ def get_data_sample(bucket_name, data_sample,transformations):
     if transformations:
         return transformations(content), sample_label
     else:
+        return transform(content), sample_label
         return torchvision.transforms.ToTensor()(content), sample_label
 
 def create_minibatch(bucket_name, samples, transformations):
