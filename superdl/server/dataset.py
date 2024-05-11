@@ -58,7 +58,7 @@ class Dataset(BaseDataset):
         for idx, data in enumerate(partitions):
             new_partition = DatasetPartition(idx + 1, data, self.batch_size, self.drop_last)
             self.partitions[new_partition.partition_id] = new_partition
-            print(len(new_partition))
+            # print(len(new_partition))
             total_len += len(new_partition)
         
         # Ensure total length matches the length of the dataset
