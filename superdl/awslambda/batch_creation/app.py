@@ -75,8 +75,8 @@ def get_data_sample(bucket_name, data_sample,transformations):
     if transformations:
         return transformations(content), sample_label
     else:
-        return transform(content), sample_label
-        return torchvision.transforms.ToTensor()(content), sample_label
+        return transform()(content), sample_label
+        # return torchvision.transforms.ToTensor()(content), sample_label
 
 def create_minibatch(bucket_name, samples, transformations):
     sample_data, sample_labels = [], []
