@@ -1,7 +1,7 @@
 defaults:
   - _self_
-  - override hydra/hydra_logging: disabled  
-  - override hydra/job_logging: disabled
+  # - override hydra/hydra_logging: disabled  
+  # - override hydra/job_logging: disabled
 
 s3_data_dir: s3://sdl-cifar10/train/ #s3://imagenet1k-sdl/train/
 batch_size: 128 #chunk_size  = number of files per chunk

@@ -10,6 +10,7 @@ twine
 build
 pandas
 numpy
+hydra
 #nlp workload
 #tiktoken
 #datasets

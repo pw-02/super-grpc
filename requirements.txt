@@ -4,6 +4,7 @@ grpcio-tools
 awscli
 hydra-core
 numpy
+hydra
 #nlp workload
 #tiktoken
 #datasets
