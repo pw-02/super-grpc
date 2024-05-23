@@ -45,17 +45,23 @@ def is_image_file(path: str):
     return any(path.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP'])
 
 
+# def transform():
+#     normalize = transforms.Normalize(
+#         mean=[0.485, 0.456, 0.406], 
+#         std=[0.229, 0.224, 0.225],
+#     )
+#     return transforms.Compose([
+#         transforms.RandomResizedCrop(224),
+#         transforms.RandomHorizontalFlip(),
+#         transforms.ToTensor(),
+#         normalize,
+#     ])
+
 def transform():
-    normalize = transforms.Normalize(
-        mean=[0.485, 0.456, 0.406], 
-        std=[0.229, 0.224, 0.225],
-    )
     return transforms.Compose([
-        transforms.RandomResizedCrop(224),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        normalize,
-    ])
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ])
 
 
 def get_data_sample(bucket_name, data_sample,transformations):
