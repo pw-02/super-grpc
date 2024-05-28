@@ -45,24 +45,24 @@ def is_image_file(path: str):
     return any(path.endswith(extension) for extension in ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP'])
 
 
-def transform():
-    normalize = transforms.Normalize(
-        mean=[0.485, 0.456, 0.406], 
-        std=[0.229, 0.224, 0.225],
-    )
-    return transforms.Compose([
-        transforms.Resize(256),                    # Resize the image to 256x256 pixels
-        transforms.RandomResizedCrop(224),   # Randomly crop a 224x224 patch
-        transforms.RandomHorizontalFlip(), # Randomly flip the image horizontally
-        transforms.ToTensor(),  # Convert the image to a PyTorch tensor
-        normalize,
-    ])
-
 # def transform():
+#     normalize = transforms.Normalize(
+#         mean=[0.485, 0.456, 0.406], 
+#         std=[0.229, 0.224, 0.225],
+#     )
 #     return transforms.Compose([
-#             transforms.ToTensor(),
-#             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-#         ])
+#         transforms.Resize(256),                    # Resize the image to 256x256 pixels
+#         transforms.RandomResizedCrop(224),   # Randomly crop a 224x224 patch
+#         transforms.RandomHorizontalFlip(), # Randomly flip the image horizontally
+#         transforms.ToTensor(),  # Convert the image to a PyTorch tensor
+#         normalize,
+#     ])
+
+def transform():
+    return transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ])
 
 
 def get_data_sample(bucket_name, data_sample,transformations):

@@ -3,14 +3,14 @@ defaults:
   # - override hydra/hydra_logging: disabled  
   # - override hydra/job_logging: disabled
 
-s3_data_dir: s3://sdl-cifar10/train/ #s3://imagenet1k-sdl/train/, s3://sdl-cifar10/train/
-batch_size: 128 #chunk_size  = number of files per chunk
+s3_data_dir: s3://imagenet1k-sdl/train/ #s3://sdl-cifar10/train/ #s3://imagenet1k-sdl/train/, s3://sdl-cifar10/train/
+batch_size: 256 #chunk_size  = number of files per chunk
 max_lookahead_batches: 50
 max_prefetch_workers: 8
 keep_alive_ping_iterval: 900
 shuffle: True
 drop_last: False
-cache_address:  '10.0.24.192:6378' # '10.0.24.192:6378' # '10.0.29.229:6378' 10.0.20.157:6378'
+cache_address:  '172.17.0.3:6379' #'10.0.24.192:6378' # '10.0.24.192:6378' # '10.0.29.229:6378' 10.0.20.157:6378'
 simulate_mode: False
 batch_creation_lambda: 'superdataloader-CreateBatchFunction-WlTEivefOYJK'
 testing_locally: False
