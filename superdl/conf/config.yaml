@@ -3,7 +3,7 @@ defaults:
   # - override hydra/hydra_logging: disabled  
   # - override hydra/job_logging: disabled
 
-s3_data_dir: s3://imagenet1k-sdl/train/ #s3://imagenet1k-sdl/train/, s3://sdl-cifar10/train/
+s3_data_dir: s3://sdl-cifar10/train/ #s3://imagenet1k-sdl/train/, s3://sdl-cifar10/train/
 batch_size: 128 #chunk_size  = number of files per chunk
 max_lookahead_batches: 50
 max_prefetch_workers: 8
