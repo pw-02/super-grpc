@@ -5,7 +5,7 @@ defaults:
   # - override hydra/job_logging: disabled
 
 
-cache_address: 10.0.29.229:6378  #10.0.24.192:6378 # '10.0.24.192:6378' # '10.0.29.229:6378' 10.0.20.157:6378'
+cache_address: 10.0.24.192:6378  #10.0.24.192:6378 # '10.0.24.192:6378' # '10.0.29.229:6378' 10.0.20.157:6378'
 simulate_mode: False
 batch_creation_lambda: 'superdataloader-CreateBatchFunction-WlTEivefOYJK'
 testing_locally: False
