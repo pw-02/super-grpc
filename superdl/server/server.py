@@ -80,7 +80,6 @@ def serve(config: DictConfig):
             response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda) 
             if response['success']:
                 logger.info(f"Warm up took {response['duration']:.3f}s")
-            
         else:
             logger.info("Running in simualtion mode")
 

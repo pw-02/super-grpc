@@ -283,3 +283,267 @@ KeyError: 'success'
 [2024-05-30 18:15:39,416][SUPER][INFO] - New job with id '204902' successfully registered.
 [2024-05-30 18:17:53,257][SUPER][INFO] - New job with id '207434' successfully registered.
 [2024-05-30 18:19:56,747][SUPER][INFO] - Average time interval between requests: 121.0547 seconds
+[2024-05-30 18:21:39,640][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:21:41,183][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-30 18:21:41,184][SUPER][INFO] - Running in simualtion mode
+[2024-05-30 18:21:41,185][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:21:57,293][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 18:22:17,170][SUPER][INFO] - New job with id '211865' successfully registered.
+[2024-05-30 18:25:50,931][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:26:52,988][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2285, Batches: 2285, Partitions: 1
+[2024-05-30 18:26:52,990][SUPER][INFO] - Running in simualtion mode
+[2024-05-30 18:26:52,991][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:26:53,021][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 18:27:08,881][SUPER][INFO] - New job with id '214598' successfully registered.
+[2024-05-30 18:28:13,038][SUPER][INFO] - Average time interval between requests: 62.3823 seconds
+[2024-05-30 18:28:45,275][SUPER][INFO] - Average time interval between requests: 47.3095 seconds
+[2024-05-30 18:29:43,450][SUPER][INFO] - Average time interval between requests: 50.9313 seconds
+[2024-05-30 18:30:22,860][SUPER][INFO] - Average time interval between requests: 48.0512 seconds
+[2024-05-30 18:32:14,339][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:32:16,788][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2285, Batches: 2285, Partitions: 1
+[2024-05-30 18:32:16,789][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-30 18:32:20,902][SUPER][INFO] - Warm up took 4.111s
+[2024-05-30 18:32:20,903][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:32:20,941][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 18:32:21,609][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: stack expects a non-empty TensorList, Request Duration: 0.690s, Attempt: 1
+[2024-05-30 18:32:21,758][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: stack expects a non-empty TensorList, Request Duration: 0.149s, Attempt: 2
+[2024-05-30 18:32:21,988][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: stack expects a non-empty TensorList, Request Duration: 0.228s, Attempt: 3
+[2024-05-30 18:32:22,128][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: stack expects a non-empty TensorList, Request Duration: 0.139s, Attempt: 4
+[2024-05-30 18:32:22,271][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: stack expects a non-empty TensorList, Request Duration: 0.141s, Attempt: 5
+[2024-05-30 18:32:22,625][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: stack expects a non-empty TensorList, Request Duration: 0.352s, Attempt: 1
+[2024-05-30 18:32:22,823][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: stack expects a non-empty TensorList, Request Duration: 0.197s, Attempt: 2
+[2024-05-30 18:32:22,963][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: stack expects a non-empty TensorList, Request Duration: 0.139s, Attempt: 3
+[2024-05-30 18:32:23,107][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: stack expects a non-empty TensorList, Request Duration: 0.143s, Attempt: 4
+[2024-05-30 18:32:23,233][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: stack expects a non-empty TensorList, Request Duration: 0.125s, Attempt: 5
+[2024-05-30 18:32:23,437][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: stack expects a non-empty TensorList, Request Duration: 0.204s, Attempt: 1
+[2024-05-30 18:32:23,561][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: stack expects a non-empty TensorList, Request Duration: 0.123s, Attempt: 2
+[2024-05-30 18:32:23,692][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: stack expects a non-empty TensorList, Request Duration: 0.130s, Attempt: 3
+[2024-05-30 18:32:23,830][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: stack expects a non-empty TensorList, Request Duration: 0.137s, Attempt: 4
+[2024-05-30 18:32:23,969][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: stack expects a non-empty TensorList, Request Duration: 0.138s, Attempt: 5
+[2024-05-30 18:32:24,268][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: stack expects a non-empty TensorList, Request Duration: 0.298s, Attempt: 1
+[2024-05-30 18:32:24,406][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: stack expects a non-empty TensorList, Request Duration: 0.137s, Attempt: 2
+[2024-05-30 18:32:24,540][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: stack expects a non-empty TensorList, Request Duration: 0.133s, Attempt: 3
+[2024-05-30 18:32:24,666][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: stack expects a non-empty TensorList, Request Duration: 0.125s, Attempt: 4
+[2024-05-30 18:32:24,794][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: stack expects a non-empty TensorList, Request Duration: 0.127s, Attempt: 5
+[2024-05-30 18:32:25,170][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: stack expects a non-empty TensorList, Request Duration: 0.375s, Attempt: 1
+[2024-05-30 18:32:25,332][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: stack expects a non-empty TensorList, Request Duration: 0.161s, Attempt: 2
+[2024-05-30 18:32:25,475][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: stack expects a non-empty TensorList, Request Duration: 0.141s, Attempt: 3
+[2024-05-30 18:32:25,611][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: stack expects a non-empty TensorList, Request Duration: 0.136s, Attempt: 4
+[2024-05-30 18:32:25,745][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: stack expects a non-empty TensorList, Request Duration: 0.133s, Attempt: 5
+[2024-05-30 18:32:26,132][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: stack expects a non-empty TensorList, Request Duration: 0.386s, Attempt: 1
+[2024-05-30 18:32:26,333][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: stack expects a non-empty TensorList, Request Duration: 0.200s, Attempt: 2
+[2024-05-30 18:32:26,475][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: stack expects a non-empty TensorList, Request Duration: 0.141s, Attempt: 3
+[2024-05-30 18:32:26,600][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: stack expects a non-empty TensorList, Request Duration: 0.124s, Attempt: 4
+[2024-05-30 18:32:26,727][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: stack expects a non-empty TensorList, Request Duration: 0.125s, Attempt: 5
+[2024-05-30 18:32:27,062][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: stack expects a non-empty TensorList, Request Duration: 0.334s, Attempt: 1
+[2024-05-30 18:32:27,225][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: stack expects a non-empty TensorList, Request Duration: 0.162s, Attempt: 2
+[2024-05-30 18:32:27,443][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: stack expects a non-empty TensorList, Request Duration: 0.217s, Attempt: 3
+[2024-05-30 18:32:27,615][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: stack expects a non-empty TensorList, Request Duration: 0.172s, Attempt: 4
+[2024-05-30 18:32:27,753][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: stack expects a non-empty TensorList, Request Duration: 0.136s, Attempt: 5
+[2024-05-30 18:32:28,184][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: stack expects a non-empty TensorList, Request Duration: 0.430s, Attempt: 1
+[2024-05-30 18:32:28,351][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: stack expects a non-empty TensorList, Request Duration: 0.166s, Attempt: 2
+[2024-05-30 18:32:28,497][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: stack expects a non-empty TensorList, Request Duration: 0.145s, Attempt: 3
+[2024-05-30 18:32:28,667][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: stack expects a non-empty TensorList, Request Duration: 0.169s, Attempt: 4
+[2024-05-30 18:32:28,801][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: stack expects a non-empty TensorList, Request Duration: 0.131s, Attempt: 5
+[2024-05-30 18:32:29,241][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: stack expects a non-empty TensorList, Request Duration: 0.439s, Attempt: 1
+[2024-05-30 18:32:29,410][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: stack expects a non-empty TensorList, Request Duration: 0.168s, Attempt: 2
+[2024-05-30 18:32:29,540][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: stack expects a non-empty TensorList, Request Duration: 0.128s, Attempt: 3
+[2024-05-30 18:32:29,735][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: stack expects a non-empty TensorList, Request Duration: 0.194s, Attempt: 4
+[2024-05-30 18:32:29,868][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: stack expects a non-empty TensorList, Request Duration: 0.132s, Attempt: 5
+[2024-05-30 18:32:30,265][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: stack expects a non-empty TensorList, Request Duration: 0.395s, Attempt: 1
+[2024-05-30 18:32:30,445][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: stack expects a non-empty TensorList, Request Duration: 0.179s, Attempt: 2
+[2024-05-30 18:32:30,572][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: stack expects a non-empty TensorList, Request Duration: 0.125s, Attempt: 3
+[2024-05-30 18:32:30,700][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: stack expects a non-empty TensorList, Request Duration: 0.128s, Attempt: 4
+[2024-05-30 18:32:30,833][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: stack expects a non-empty TensorList, Request Duration: 0.131s, Attempt: 5
+[2024-05-30 18:32:31,182][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: stack expects a non-empty TensorList, Request Duration: 0.348s, Attempt: 1
+[2024-05-30 18:32:31,440][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: stack expects a non-empty TensorList, Request Duration: 0.256s, Attempt: 2
+[2024-05-30 18:32:31,607][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: stack expects a non-empty TensorList, Request Duration: 0.166s, Attempt: 3
+[2024-05-30 18:32:31,754][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: stack expects a non-empty TensorList, Request Duration: 0.146s, Attempt: 4
+[2024-05-30 18:32:31,885][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: stack expects a non-empty TensorList, Request Duration: 0.130s, Attempt: 5
+[2024-05-30 18:32:32,198][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: stack expects a non-empty TensorList, Request Duration: 0.312s, Attempt: 1
+[2024-05-30 18:32:32,345][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: stack expects a non-empty TensorList, Request Duration: 0.146s, Attempt: 2
+[2024-05-30 18:32:32,546][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: stack expects a non-empty TensorList, Request Duration: 0.201s, Attempt: 3
+[2024-05-30 18:32:32,676][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: stack expects a non-empty TensorList, Request Duration: 0.129s, Attempt: 4
+[2024-05-30 18:32:32,804][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: stack expects a non-empty TensorList, Request Duration: 0.127s, Attempt: 5
+[2024-05-30 18:32:58,827][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:33:00,039][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2285, Batches: 2285, Partitions: 1
+[2024-05-30 18:33:00,040][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-30 18:33:00,206][SUPER][INFO] - Warm up took 0.165s
+[2024-05-30 18:33:00,206][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:33:26,915][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: stack expects a non-empty TensorList, Request Duration: 2.130s, Attempt: 1
+[2024-05-30 18:46:54,667][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:46:55,932][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2285, Batches: 2285, Partitions: 1
+[2024-05-30 18:46:55,934][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-30 18:46:56,103][SUPER][INFO] - Warm up took 0.168s
+[2024-05-30 18:46:56,104][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:46:58,607][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 18:46:58,652][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.059s, Attempt: 1
+[2024-05-30 18:46:59,417][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:46:59,976][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 3
+[2024-05-30 18:47:00,638][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 4
+[2024-05-30 18:47:02,153][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_b6589fc6ab0dc82cf12099d1c2d40ab994e8410c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.056s, Attempt: 5
+[2024-05-30 18:47:02,206][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 1
+[2024-05-30 18:47:02,255][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 2
+[2024-05-30 18:47:02,308][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:02,359][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 4
+[2024-05-30 18:47:02,413][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_356a192b7913b04c54574d18c28d46e6395428ab, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 5
+[2024-05-30 18:47:02,480][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.066s, Attempt: 1
+[2024-05-30 18:47:02,529][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 2
+[2024-05-30 18:47:02,580][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 3
+[2024-05-30 18:47:02,630][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 4
+[2024-05-30 18:47:02,681][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_da4b9237bacccdf19c0760cab7aec4a8359010b0, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 5
+[2024-05-30 18:47:02,733][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:02,783][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:47:02,836][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:02,888][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 4
+[2024-05-30 18:47:02,941][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_77de68daecd823babbb58edb1c8e14d7106e83bb, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 5
+[2024-05-30 18:47:02,994][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 1
+[2024-05-30 18:47:03,047][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 2
+[2024-05-30 18:47:03,101][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 3
+[2024-05-30 18:47:03,174][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.072s, Attempt: 4
+[2024-05-30 18:47:03,226][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_1b6453892473a467d07372d45eb05abc2031647a, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 5
+[2024-05-30 18:47:03,278][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:03,330][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 2
+[2024-05-30 18:47:03,383][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:03,436][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 4
+[2024-05-30 18:47:03,519][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.082s, Attempt: 5
+[2024-05-30 18:47:03,584][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.064s, Attempt: 1
+[2024-05-30 18:47:03,639][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 2
+[2024-05-30 18:47:03,691][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:03,747][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 4
+[2024-05-30 18:47:03,804][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_c1dfd96eea8cc2b62785275bca38ac261256e278, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.056s, Attempt: 5
+[2024-05-30 18:47:03,855][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:03,906][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:47:03,970][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.064s, Attempt: 3
+[2024-05-30 18:47:04,022][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 4
+[2024-05-30 18:47:04,074][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_902ba3cda1883801594b6e1b452790cc53948fda, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 5
+[2024-05-30 18:47:04,126][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 1
+[2024-05-30 18:47:04,177][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:47:04,232][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 3
+[2024-05-30 18:47:04,284][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 4
+[2024-05-30 18:47:04,334][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_fe5dbbcea5ce7e2988b8c69bcfdfde8904aabc1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 5
+[2024-05-30 18:47:04,387][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 1
+[2024-05-30 18:47:04,438][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:47:04,488][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 3
+[2024-05-30 18:47:04,552][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.062s, Attempt: 4
+[2024-05-30 18:47:04,605][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_0ade7c2cf97f75d009975f4d720d1fa6c19f4897, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 5
+[2024-05-30 18:47:04,658][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 1
+[2024-05-30 18:47:04,713][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 2
+[2024-05-30 18:47:04,764][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 3
+[2024-05-30 18:47:04,814][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 4
+[2024-05-30 18:47:04,864][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_b1d5781111d84f7b3fe45a0852e59758cd7a87e5, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.048s, Attempt: 5
+[2024-05-30 18:47:04,914][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:04,965][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 2
+[2024-05-30 18:47:05,017][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:05,070][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 4
+[2024-05-30 18:47:05,133][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_17ba0791499db908433b80f37c5fbc89b870084b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.062s, Attempt: 5
+[2024-05-30 18:47:05,186][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_7b52009b64fd0a2a49e6d8a939753077792b0554, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 1
+[2024-05-30 18:47:05,240][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_7b52009b64fd0a2a49e6d8a939753077792b0554, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 2
+[2024-05-30 18:47:05,293][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_7b52009b64fd0a2a49e6d8a939753077792b0554, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:05,346][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_7b52009b64fd0a2a49e6d8a939753077792b0554, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 4
+[2024-05-30 18:47:05,402][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_7b52009b64fd0a2a49e6d8a939753077792b0554, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.055s, Attempt: 5
+[2024-05-30 18:47:05,456][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_bd307a3ec329e10a2cff8fb87480823da114f8f4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 1
+[2024-05-30 18:47:05,513][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_bd307a3ec329e10a2cff8fb87480823da114f8f4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.055s, Attempt: 2
+[2024-05-30 18:47:05,567][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_bd307a3ec329e10a2cff8fb87480823da114f8f4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 3
+[2024-05-30 18:47:05,625][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_bd307a3ec329e10a2cff8fb87480823da114f8f4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.056s, Attempt: 4
+[2024-05-30 18:47:05,675][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_bd307a3ec329e10a2cff8fb87480823da114f8f4, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 5
+[2024-05-30 18:47:05,727][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_15_fa35e192121eabf3dabf9f5ea6abdbcbc107ac3b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 1
+[2024-05-30 18:47:05,783][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_15_fa35e192121eabf3dabf9f5ea6abdbcbc107ac3b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.055s, Attempt: 2
+[2024-05-30 18:47:05,839][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_15_fa35e192121eabf3dabf9f5ea6abdbcbc107ac3b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 3
+[2024-05-30 18:47:05,893][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_15_fa35e192121eabf3dabf9f5ea6abdbcbc107ac3b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 4
+[2024-05-30 18:47:05,944][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_15_fa35e192121eabf3dabf9f5ea6abdbcbc107ac3b, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 5
+[2024-05-30 18:47:05,992][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_16_f1abd670358e036c31296e66b3b66c382ac00812, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.047s, Attempt: 1
+[2024-05-30 18:47:06,043][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_16_f1abd670358e036c31296e66b3b66c382ac00812, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:47:06,094][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_16_f1abd670358e036c31296e66b3b66c382ac00812, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 3
+[2024-05-30 18:47:06,147][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_16_f1abd670358e036c31296e66b3b66c382ac00812, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 4
+[2024-05-30 18:47:06,201][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_16_f1abd670358e036c31296e66b3b66c382ac00812, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 5
+[2024-05-30 18:47:06,252][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_17_1574bddb75c78a6fd2251d61e2993b5146201319, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 1
+[2024-05-30 18:47:06,306][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_17_1574bddb75c78a6fd2251d61e2993b5146201319, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 2
+[2024-05-30 18:47:06,360][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_17_1574bddb75c78a6fd2251d61e2993b5146201319, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:06,412][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_17_1574bddb75c78a6fd2251d61e2993b5146201319, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 4
+[2024-05-30 18:47:06,465][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_17_1574bddb75c78a6fd2251d61e2993b5146201319, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 5
+[2024-05-30 18:47:06,521][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_18_0716d9708d321ffb6a00818614779e779925365c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.055s, Attempt: 1
+[2024-05-30 18:47:06,575][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_18_0716d9708d321ffb6a00818614779e779925365c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 2
+[2024-05-30 18:47:06,631][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_18_0716d9708d321ffb6a00818614779e779925365c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 3
+[2024-05-30 18:47:06,683][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_18_0716d9708d321ffb6a00818614779e779925365c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 4
+[2024-05-30 18:47:06,735][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_18_0716d9708d321ffb6a00818614779e779925365c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 5
+[2024-05-30 18:47:06,787][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_19_9e6a55b6b4563e652a23be9d623ca5055c356940, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:06,838][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_19_9e6a55b6b4563e652a23be9d623ca5055c356940, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 2
+[2024-05-30 18:47:06,891][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_19_9e6a55b6b4563e652a23be9d623ca5055c356940, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:06,940][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_19_9e6a55b6b4563e652a23be9d623ca5055c356940, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.048s, Attempt: 4
+[2024-05-30 18:47:06,989][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_19_9e6a55b6b4563e652a23be9d623ca5055c356940, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 5
+[2024-05-30 18:47:07,037][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_20_b3f0c7f6bb763af1be91d9e74eabfeb199dc1f1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.046s, Attempt: 1
+[2024-05-30 18:47:07,087][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_20_b3f0c7f6bb763af1be91d9e74eabfeb199dc1f1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 2
+[2024-05-30 18:47:07,137][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_20_b3f0c7f6bb763af1be91d9e74eabfeb199dc1f1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 3
+[2024-05-30 18:47:07,220][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_20_b3f0c7f6bb763af1be91d9e74eabfeb199dc1f1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.082s, Attempt: 4
+[2024-05-30 18:47:07,277][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_20_b3f0c7f6bb763af1be91d9e74eabfeb199dc1f1f, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.056s, Attempt: 5
+[2024-05-30 18:47:07,328][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_21_91032ad7bbcb6cf72875e8e8207dcfba80173f7c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:07,379][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_21_91032ad7bbcb6cf72875e8e8207dcfba80173f7c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.049s, Attempt: 2
+[2024-05-30 18:47:07,433][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_21_91032ad7bbcb6cf72875e8e8207dcfba80173f7c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 3
+[2024-05-30 18:47:07,488][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_21_91032ad7bbcb6cf72875e8e8207dcfba80173f7c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 4
+[2024-05-30 18:47:07,539][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_21_91032ad7bbcb6cf72875e8e8207dcfba80173f7c, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 5
+[2024-05-30 18:47:07,592][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_22_472b07b9fcf2c2451e8781e944bf5f77cd8457c8, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 1
+[2024-05-30 18:47:07,656][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_22_472b07b9fcf2c2451e8781e944bf5f77cd8457c8, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.063s, Attempt: 2
+[2024-05-30 18:47:07,709][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_22_472b07b9fcf2c2451e8781e944bf5f77cd8457c8, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 3
+[2024-05-30 18:47:07,779][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_22_472b07b9fcf2c2451e8781e944bf5f77cd8457c8, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.069s, Attempt: 4
+[2024-05-30 18:47:07,833][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_22_472b07b9fcf2c2451e8781e944bf5f77cd8457c8, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 5
+[2024-05-30 18:47:07,887][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_23_12c6fc06c99a462375eeb3f43dfd832b08ca9e17, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 1
+[2024-05-30 18:47:07,940][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_23_12c6fc06c99a462375eeb3f43dfd832b08ca9e17, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.052s, Attempt: 2
+[2024-05-30 18:47:07,991][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_23_12c6fc06c99a462375eeb3f43dfd832b08ca9e17, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 3
+[2024-05-30 18:47:08,040][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_23_12c6fc06c99a462375eeb3f43dfd832b08ca9e17, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.048s, Attempt: 4
+[2024-05-30 18:47:08,090][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_23_12c6fc06c99a462375eeb3f43dfd832b08ca9e17, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 5
+[2024-05-30 18:47:08,146][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_24_d435a6cdd786300dff204ee7c2ef942d3e9034e2, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.054s, Attempt: 1
+[2024-05-30 18:47:08,197][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_24_d435a6cdd786300dff204ee7c2ef942d3e9034e2, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.051s, Attempt: 2
+[2024-05-30 18:47:08,251][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_24_d435a6cdd786300dff204ee7c2ef942d3e9034e2, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 3
+[2024-05-30 18:47:08,305][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_24_d435a6cdd786300dff204ee7c2ef942d3e9034e2, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 4
+[2024-05-30 18:47:08,360][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_24_d435a6cdd786300dff204ee7c2ef942d3e9034e2, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 5
+[2024-05-30 18:47:08,412][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_25_4d134bc072212ace2df385dae143139da74ec0ef, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.050s, Attempt: 1
+[2024-05-30 18:47:08,465][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_25_4d134bc072212ace2df385dae143139da74ec0ef, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 2
+[2024-05-30 18:47:08,525][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_25_4d134bc072212ace2df385dae143139da74ec0ef, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.058s, Attempt: 3
+[2024-05-30 18:47:08,580][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_25_4d134bc072212ace2df385dae143139da74ec0ef, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.053s, Attempt: 4
+[2024-05-30 18:47:08,641][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_25_4d134bc072212ace2df385dae143139da74ec0ef, Message: local variable 'torch_minibatch' referenced before assignment, Request Duration: 0.060s, Attempt: 5
+[2024-05-30 18:48:32,706][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:48:33,980][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2285, Batches: 2285, Partitions: 1
+[2024-05-30 18:48:33,981][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-30 18:48:34,194][SUPER][INFO] - Warm up took 0.213s
+[2024-05-30 18:48:34,195][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:49:51,932][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 18:49:53,148][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2285, Batches: 2285, Partitions: 1
+[2024-05-30 18:49:53,149][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-30 18:49:53,350][SUPER][INFO] - Warm up took 0.201s
+[2024-05-30 18:49:53,351][SUPER][INFO] - Data loading workers started
+[2024-05-30 18:49:55,086][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 18:51:37,627][SUPER][INFO] - New job with id '223471' successfully registered.
+[2024-05-30 18:52:52,695][SUPER][INFO] - New job with id '224661' successfully registered.
+[2024-05-30 18:53:32,057][SUPER][INFO] - Average time interval between requests: 37.5775 seconds
+[2024-05-30 18:53:39,495][SUPER][INFO] - Average time interval between requests: 22.5075 seconds
+[2024-05-30 18:53:43,645][SUPER][INFO] - Average time interval between requests: 16.3886 seconds
+[2024-05-30 18:53:45,966][SUPER][INFO] - Average time interval between requests: 12.8717 seconds
+[2024-05-30 18:53:48,315][SUPER][INFO] - Average time interval between requests: 10.7672 seconds
+[2024-05-30 18:53:50,581][SUPER][INFO] - Average time interval between requests: 9.3503 seconds
+[2024-05-30 18:53:52,809][SUPER][INFO] - Average time interval between requests: 8.3328 seconds
+[2024-05-30 18:53:55,027][SUPER][INFO] - Average time interval between requests: 7.5684 seconds
+[2024-05-30 18:53:57,252][SUPER][INFO] - Average time interval between requests: 6.9747 seconds
+[2024-05-30 18:53:59,649][SUPER][INFO] - Average time interval between requests: 6.5169 seconds
+[2024-05-30 18:54:02,013][SUPER][INFO] - Average time interval between requests: 6.1394 seconds
+[2024-05-30 18:54:04,198][SUPER][INFO] - Average time interval between requests: 5.8099 seconds
+[2024-05-30 18:54:06,519][SUPER][INFO] - Average time interval between requests: 5.5415 seconds
+[2024-05-30 18:54:08,864][SUPER][INFO] - Average time interval between requests: 5.3132 seconds
+[2024-05-30 18:54:11,207][SUPER][INFO] - Average time interval between requests: 5.1151 seconds
+[2024-05-30 18:54:13,406][SUPER][INFO] - Average time interval between requests: 4.9329 seconds
+[2024-05-30 18:54:15,790][SUPER][INFO] - Average time interval between requests: 4.7830 seconds
+[2024-05-30 18:54:18,143][SUPER][INFO] - Average time interval between requests: 4.6479 seconds
+[2024-05-30 18:54:20,363][SUPER][INFO] - Average time interval between requests: 4.5202 seconds
+[2024-05-30 18:54:22,719][SUPER][INFO] - Average time interval between requests: 4.4119 seconds
+[2024-05-30 18:54:25,100][SUPER][INFO] - Average time interval between requests: 4.3153 seconds
+[2024-05-30 18:54:27,315][SUPER][INFO] - Average time interval between requests: 4.2198 seconds
+[2024-05-30 18:54:29,492][SUPER][INFO] - Average time interval between requests: 4.1310 seconds
+[2024-05-30 18:54:31,733][SUPER][INFO] - Average time interval between requests: 4.0522 seconds
+[2024-05-30 18:54:34,103][SUPER][INFO] - Average time interval between requests: 3.9849 seconds
+[2024-05-30 18:54:36,450][SUPER][INFO] - Average time interval between requests: 3.9219 seconds
+[2024-05-30 18:54:38,816][SUPER][INFO] - Average time interval between requests: 3.8643 seconds
+[2024-05-30 18:54:41,189][SUPER][INFO] - Average time interval between requests: 3.8110 seconds
+[2024-05-30 18:54:43,377][SUPER][INFO] - Average time interval between requests: 3.7551 seconds
+[2024-05-30 18:54:45,584][SUPER][INFO] - Average time interval between requests: 3.7035 seconds
+[2024-05-30 18:54:47,903][SUPER][INFO] - Average time interval between requests: 3.6588 seconds
+[2024-05-30 18:54:50,148][SUPER][INFO] - Average time interval between requests: 3.6146 seconds

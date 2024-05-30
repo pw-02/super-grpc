@@ -31,7 +31,7 @@ import os
 # REDIS_PORT = 6379
 nltk.data.path.append(os.getenv('NLTK_DATA', '/var/task/nltk_data'))
 s3_client = None
-redis_client = None
+# redis_client = None
 # Set the TRANSFORMERS_CACHE environment variable
 os.environ['HF_HOME'] = '/tmp'
 # Ensure the cache directory exists
@@ -349,13 +349,13 @@ def lambda_handler(event, context):
         transformations =  None
         cache_host, cache_port = cache_address.split(":")
 
-        global s3_client, redis_client
+        global s3_client #, redis_client
 
         if s3_client is None:
             s3_client = boto3.client('s3')
 
-        if redis_client is None:
-            redis_client = redis.StrictRedis(host=cache_host, port=cache_port) # Instantiate Redis client
+        # if redis_client is None:
+        redis_client = redis.StrictRedis(host=cache_host, port=cache_port) # Instantiate Redis client
            
         if task == 'vision':
              #deserailize transfor,ations

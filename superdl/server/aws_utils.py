@@ -104,6 +104,9 @@ def load_paired_s3_object_keys(s3_uri:str, images_only:bool, use_index_file:bool
             
             if images_only and not is_image_file(blob_path):
                 continue  # Skip non-image files
+            
+            if 'index.json' in blob_path:
+                continue
 
             blob_class = stripped_path.split("/")[0]
             blobs_with_class = paired_samples.get(blob_class, [])
@@ -114,6 +117,7 @@ def load_paired_s3_object_keys(s3_uri:str, images_only:bool, use_index_file:bool
         index_object = s3_client.put_object(Bucket=s3url.bucket, Key=index_file_key, 
                                             Body=json.dumps(paired_samples, indent=4).encode('UTF-8'))    
     return paired_samples
+
 
  
 def is_image_file(path: str):

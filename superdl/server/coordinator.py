@@ -156,7 +156,7 @@ class SUPERCoordinator:
                 'bucket_name': self.dataset.bucket_name,
                 'batch_id': next_batch.batch_id,
                 'batch_samples': self.dataset.get_samples(next_batch.indicies),
-                'task':'vision',
+                'task':self.args.workload_kind,
                 'cache_address': self.args.cache_address
                 }
             response = self.lambda_client.invoke_function(self.args.batch_creation_lambda,json.dumps(payload), self.args.simulate_mode)
