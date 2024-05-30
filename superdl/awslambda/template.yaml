@@ -5,7 +5,7 @@ Description: >
   Sample SAM Template for lambda
 Globals:
   Function:
-    Timeout: 50
+    Timeout: 60
     MemorySize: 5000
   Api:
     BinaryMediaTypes:
@@ -32,6 +32,11 @@ Resources:
         SubnetIds:
           - subnet-0719017fb24af22ac  # Replace with your subnet ID
           - subnet-076f5a2c0e07e6b1e  # Replace with your subnet ID
+      Environment:
+        Variables:
+          HF_HOME: /tmp/huggingface_cache
+      # EphemeralStorage:
+      #   Size: 10240  # Set ephemeral storage to 10 GB
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./batch_creation

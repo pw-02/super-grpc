@@ -5,3 +5,5 @@ torchvision==0.14.1+cpu
 pillow
 boto3
 redis
+nltk
+transformers

@@ -4,6 +4,7 @@ from pathlib import Path
 
 @dataclass
 class SUPERArgs:
+    workload_kind:str = 'vision',
     s3_data_dir: str = 's3://sdl-cifar10/train/'
     batch_creation_lambda: str = None 
     batch_size: int = 100 

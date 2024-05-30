@@ -20,7 +20,8 @@ from epoch import Epoch
 class SUPERCoordinator:
     def __init__(self, args:SUPERArgs):
         self.args: SUPERArgs = args
-        self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions)
+        self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, 
+                                       self.args.num_dataset_partitions, self.args.workload_kind)
         self.partition_epochs: Dict[int, List[Epoch]] = {}
         self.active_partition_epoch:Epoch = None
         self.jobs: Dict[int, MLTrainingJob] = {}
@@ -28,6 +29,7 @@ class SUPERCoordinator:
         self.prefetch_batches_stop_event = threading.Event()
         self.token_bucket:TokenBucket = TokenBucket(capacity=args.max_lookahead_batches, refill_rate=0)
         self.executor = ThreadPoolExecutor(max_workers=args.max_prefetch_workers)  # Adjust max_workers as neede
+        self.workload_kind = 'workload_kind'
         logger.info(f"Dataset Confirmed. Data Dir: {self.dataset.data_dir}, Files: {len(self.dataset)}, Batches: {self.dataset.num_batches}, Partitions: {len(self.dataset.partitions)}")
 
     def start_prefetcher_service(self):

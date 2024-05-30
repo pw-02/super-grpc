@@ -58,17 +58,18 @@ def serve(config: DictConfig):
     try:
         logger.info("Starting SUPER Datloading Service")   
         super_args:SUPERArgs = SUPERArgs(
-            s3_data_dir = config.s3_data_dir,
+            workload_kind =config.workload.kind,
+            s3_data_dir = config.workload.s3_data_dir,
             batch_creation_lambda = config.batch_creation_lambda,
-            batch_size = config.batch_size,
-            drop_last=config.drop_last,
+            batch_size = config.workload.batch_size,
+            drop_last=config.workload.drop_last,
             simulate_mode = config.simulate_mode,
-            keep_alive_ping_iterval = config.keep_alive_ping_iterval,
-            max_lookahead_batches = config.max_lookahead_batches,
-            max_prefetch_workers = config.max_prefetch_workers,
+            keep_alive_ping_iterval = config.workload.keep_alive_ping_iterval,
+            max_lookahead_batches = config.workload.max_lookahead_batches,
+            max_prefetch_workers = config.workload.max_prefetch_workers,
             cache_address = config.cache_address,
-            shuffle=config.shuffle,
-            num_dataset_partitions =config.num_dataset_partitions)
+            shuffle=config.workload.shuffle,
+            num_dataset_partitions =config.workload.num_dataset_partitions)
         
         # Create an instance of the coordinator class
         coordinator = SUPERCoordinator(args=super_args)
@@ -79,6 +80,7 @@ def serve(config: DictConfig):
             response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda) 
             if response['success']:
                 logger.info(f"Warm up took {response['duration']:.3f}s")
+            
         else:
             logger.info("Running in simualtion mode")
 

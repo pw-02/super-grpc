@@ -40,10 +40,14 @@ class BaseDataset:
 
 # Dataset class inherits from BaseDataset
 class Dataset(BaseDataset):
-    def __init__(self, data_dir: str, batch_size: int, drop_last: bool, num_partitions: int = 10):
+    def __init__(self, data_dir: str, batch_size: int, drop_last: bool, num_partitions: int = 10, kind = 'vision'):
         # Load samples from data directory
         self.data_dir = data_dir
-        self.samples = aws_utils.load_paired_s3_object_keys(data_dir, True, True)
+        if kind == 'vision':
+            self.samples = aws_utils.load_paired_s3_object_keys(data_dir, True, True)
+        else:
+            self.samples = aws_utils.load_paired_s3_object_keys(data_dir, False, False)
+
         self.bucket_name = aws_utils.S3Url(data_dir).bucket
         
         # Call the base class initializer

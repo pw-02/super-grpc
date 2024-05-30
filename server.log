@@ -1,0 +1,285 @@
+[2024-05-29 23:00:21,344][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:00:21,345][SUPER][ERROR] - Error in serve(): Key 'workload' is not in struct
+    full_key: workload
+    object_type=dict
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 61, in serve
+    workload_kind =config.workload.kind,
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 359, in __getattr__
+    self._format_and_raise(key=key, value=None, cause=e)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 819, in format_and_raise
+    _raise(ex, cause)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 351, in __getattr__
+    return self._get_impl(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 442, in _get_impl
+    node = self._get_child(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/basecontainer.py", line 73, in _get_child
+    child = self._get_node(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 475, in _get_node
+    self._validate_get(key)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 164, in _validate_get
+    self._format_and_raise(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 899, in format_and_raise
+    _raise(ex, cause)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+omegaconf.errors.ConfigAttributeError: Key 'workload' is not in struct
+    full_key: workload
+    object_type=dict
+[2024-05-29 23:00:45,297][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:00:45,299][SUPER][ERROR] - Error in serve(): Key 'workload' is not in struct
+    full_key: workload
+    object_type=dict
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 61, in serve
+    workload_kind =config.workload.kind,
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 359, in __getattr__
+    self._format_and_raise(key=key, value=None, cause=e)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 819, in format_and_raise
+    _raise(ex, cause)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 351, in __getattr__
+    return self._get_impl(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 442, in _get_impl
+    node = self._get_child(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/basecontainer.py", line 73, in _get_child
+    child = self._get_node(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 475, in _get_node
+    self._validate_get(key)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/dictconfig.py", line 164, in _validate_get
+    self._format_and_raise(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 899, in format_and_raise
+    _raise(ex, cause)
+  File "/opt/conda/lib/python3.10/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+omegaconf.errors.ConfigAttributeError: Key 'workload' is not in struct
+    full_key: workload
+    object_type=dict
+[2024-05-29 23:01:01,462][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:02:21,158][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:02:53,405][SUPER][ERROR] - Error in serve(): Dataset.__init__() got an unexpected keyword argument 'workload_kind'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 75, in serve
+    coordinator = SUPERCoordinator(args=super_args)
+  File "/workspaces/super-grpc/superdl/server/coordinator.py", line 23, in __init__
+    self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions, workload_kind ='vision')
+TypeError: Dataset.__init__() got an unexpected keyword argument 'workload_kind'
+[2024-05-29 23:11:03,189][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:11:32,256][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:12:05,933][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:12:05,935][SUPER][ERROR] - Error in serve(): 'SUPERCoordinator' object has no attribute 'workload_kind'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 75, in serve
+    coordinator = SUPERCoordinator(args=super_args)
+  File "/workspaces/super-grpc/superdl/server/coordinator.py", line 23, in __init__
+    self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions, self.workload_kind)
+AttributeError: 'SUPERCoordinator' object has no attribute 'workload_kind'
+[2024-05-29 23:12:14,109][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:12:14,111][SUPER][ERROR] - Error in serve(): 'SUPERCoordinator' object has no attribute 'workload_kind'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 75, in serve
+    coordinator = SUPERCoordinator(args=super_args)
+  File "/workspaces/super-grpc/superdl/server/coordinator.py", line 23, in __init__
+    self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions, self.workload_kind)
+AttributeError: 'SUPERCoordinator' object has no attribute 'workload_kind'
+[2024-05-29 23:12:41,521][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:13:02,051][SUPER][ERROR] - Error in serve(): 'list' object has no attribute 'values'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 75, in serve
+    coordinator = SUPERCoordinator(args=super_args)
+  File "/workspaces/super-grpc/superdl/server/coordinator.py", line 23, in __init__
+    self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions, self.args.workload_kind)
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 54, in __init__
+    super().__init__(self.samples, batch_size, drop_last)
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 23, in __init__
+    self.num_batches = (len(self) + self.batch_size - 1) // self.batch_size
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 32, in __len__
+    return sum(len(class_items) for class_items in self.samples.values())
+AttributeError: 'list' object has no attribute 'values'
+[2024-05-29 23:13:11,136][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:13:20,594][SUPER][ERROR] - Error in serve(): 'list' object has no attribute 'values'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 75, in serve
+    coordinator = SUPERCoordinator(args=super_args)
+  File "/workspaces/super-grpc/superdl/server/coordinator.py", line 23, in __init__
+    self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions, self.args.workload_kind)
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 54, in __init__
+    super().__init__(self.samples, batch_size, drop_last)
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 23, in __init__
+    self.num_batches = (len(self) + self.batch_size - 1) // self.batch_size
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 32, in __len__
+    return sum(len(class_items) for class_items in self.samples.values())
+AttributeError: 'list' object has no attribute 'values'
+[2024-05-29 23:22:39,510][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:22:48,506][SUPER][ERROR] - Error in serve(): 'list' object has no attribute 'values'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 75, in serve
+    coordinator = SUPERCoordinator(args=super_args)
+  File "/workspaces/super-grpc/superdl/server/coordinator.py", line 23, in __init__
+    self.dataset:Dataset = Dataset(self.args.s3_data_dir, self.args.batch_size, self.args.drop_last, self.args.num_dataset_partitions, self.args.workload_kind)
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 54, in __init__
+    super().__init__(self.samples, batch_size, drop_last)
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 23, in __init__
+    self.num_batches = (len(self) + self.batch_size - 1) // self.batch_size
+  File "/workspaces/super-grpc/superdl/server/dataset.py", line 32, in __len__
+    return sum(len(class_items) for class_items in self.samples.values())
+AttributeError: 'list' object has no attribute 'values'
+[2024-05-29 23:23:14,710][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:23:27,254][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:24:53,982][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:25:58,887][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:26:50,943][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-29 23:26:52,988][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-29 23:32:06,039][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:32:11,440][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-29 23:32:11,441][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-29 23:33:01,720][SUPER][ERROR] - Error in serve(): 'success'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 80, in serve
+    response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda)
+  File "/workspaces/super-grpc/superdl/server/aws_utils.py", line 165, in warm_up_lambda
+    return self.invoke_function(function_name, json.dumps(event_data))  # Pass the required payload or input parameters
+  File "/workspaces/super-grpc/superdl/server/aws_utils.py", line 159, in invoke_function
+    response['success'] = response_data['success']
+KeyError: 'success'
+[2024-05-29 23:34:46,842][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:34:50,663][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-29 23:34:52,295][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-29 23:35:42,575][SUPER][ERROR] - Error in serve(): 'success'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 80, in serve
+    response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda)
+  File "/workspaces/super-grpc/superdl/server/aws_utils.py", line 165, in warm_up_lambda
+    return self.invoke_function(function_name, json.dumps(event_data))  # Pass the required payload or input parameters
+  File "/workspaces/super-grpc/superdl/server/aws_utils.py", line 159, in invoke_function
+    response['success'] = response_data['success']
+KeyError: 'success'
+[2024-05-29 23:36:31,478][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-29 23:36:35,005][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-29 23:36:35,006][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-29 23:37:25,286][SUPER][ERROR] - Error in serve(): 'success'
+Traceback (most recent call last):
+  File "/workspaces/super-grpc/superdl/server/server.py", line 80, in serve
+    response = coordinator.lambda_client.warm_up_lambda(super_args.batch_creation_lambda)
+  File "/workspaces/super-grpc/superdl/server/aws_utils.py", line 165, in warm_up_lambda
+    return self.invoke_function(function_name, json.dumps(event_data))  # Pass the required payload or input parameters
+  File "/workspaces/super-grpc/superdl/server/aws_utils.py", line 159, in invoke_function
+    response['success'] = response_data['success']
+KeyError: 'success'
+[2024-05-30 02:26:46,065][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 02:26:47,704][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-30 02:26:47,705][SUPER][INFO] - Warming up batch creation lambda function..
+[2024-05-30 02:27:18,704][SUPER][INFO] - Warm up took 0.214s
+[2024-05-30 02:27:18,707][SUPER][INFO] - Data loading workers started
+[2024-05-30 02:27:18,835][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 02:27:20,827][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_184509be0d68cb4100a91be110003c769d7f6ea1, Message: stack expects a non-empty TensorList, Request Duration: 2.081s, Attempt: 1
+[2024-05-30 02:27:20,965][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_184509be0d68cb4100a91be110003c769d7f6ea1, Message: stack expects a non-empty TensorList, Request Duration: 0.137s, Attempt: 2
+[2024-05-30 02:27:21,098][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_184509be0d68cb4100a91be110003c769d7f6ea1, Message: stack expects a non-empty TensorList, Request Duration: 0.132s, Attempt: 3
+[2024-05-30 02:27:21,242][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_184509be0d68cb4100a91be110003c769d7f6ea1, Message: stack expects a non-empty TensorList, Request Duration: 0.144s, Attempt: 4
+[2024-05-30 02:27:21,384][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_1_184509be0d68cb4100a91be110003c769d7f6ea1, Message: stack expects a non-empty TensorList, Request Duration: 0.142s, Attempt: 5
+[2024-05-30 02:27:21,684][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_d18401b1bb37c5d9297cf16fc43858b4fdb37825, Message: stack expects a non-empty TensorList, Request Duration: 0.299s, Attempt: 1
+[2024-05-30 02:27:21,832][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_d18401b1bb37c5d9297cf16fc43858b4fdb37825, Message: stack expects a non-empty TensorList, Request Duration: 0.147s, Attempt: 2
+[2024-05-30 02:27:21,953][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_d18401b1bb37c5d9297cf16fc43858b4fdb37825, Message: stack expects a non-empty TensorList, Request Duration: 0.120s, Attempt: 3
+[2024-05-30 02:27:22,076][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_d18401b1bb37c5d9297cf16fc43858b4fdb37825, Message: stack expects a non-empty TensorList, Request Duration: 0.122s, Attempt: 4
+[2024-05-30 02:27:22,196][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_5_d18401b1bb37c5d9297cf16fc43858b4fdb37825, Message: stack expects a non-empty TensorList, Request Duration: 0.119s, Attempt: 5
+[2024-05-30 02:27:22,649][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_533958a2148aa8a3466fa3a8340d51e28294f41d, Message: stack expects a non-empty TensorList, Request Duration: 0.453s, Attempt: 1
+[2024-05-30 02:27:23,056][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_793fb87490c33b038af1310868c64bf55928478f, Message: stack expects a non-empty TensorList, Request Duration: 4.306s, Attempt: 1
+[2024-05-30 02:27:23,058][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_290448489a06c6a2dc62e82491212444bd6e341f, Message: stack expects a non-empty TensorList, Request Duration: 4.303s, Attempt: 1
+[2024-05-30 02:27:23,059][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_533958a2148aa8a3466fa3a8340d51e28294f41d, Message: stack expects a non-empty TensorList, Request Duration: 0.399s, Attempt: 2
+[2024-05-30 02:27:23,208][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_5963f5b45919a815eb139134b57efb530fe7f634, Message: stack expects a non-empty TensorList, Request Duration: 4.447s, Attempt: 1
+[2024-05-30 02:27:23,215][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_533958a2148aa8a3466fa3a8340d51e28294f41d, Message: stack expects a non-empty TensorList, Request Duration: 0.148s, Attempt: 3
+[2024-05-30 02:27:23,259][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_290448489a06c6a2dc62e82491212444bd6e341f, Message: stack expects a non-empty TensorList, Request Duration: 0.196s, Attempt: 2
+[2024-05-30 02:27:23,319][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_793fb87490c33b038af1310868c64bf55928478f, Message: stack expects a non-empty TensorList, Request Duration: 0.260s, Attempt: 2
+[2024-05-30 02:27:23,345][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_533958a2148aa8a3466fa3a8340d51e28294f41d, Message: stack expects a non-empty TensorList, Request Duration: 0.130s, Attempt: 4
+[2024-05-30 02:27:23,439][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_5963f5b45919a815eb139134b57efb530fe7f634, Message: stack expects a non-empty TensorList, Request Duration: 0.229s, Attempt: 2
+[2024-05-30 02:27:23,469][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_793fb87490c33b038af1310868c64bf55928478f, Message: stack expects a non-empty TensorList, Request Duration: 0.149s, Attempt: 3
+[2024-05-30 02:27:23,479][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_6_533958a2148aa8a3466fa3a8340d51e28294f41d, Message: stack expects a non-empty TensorList, Request Duration: 0.132s, Attempt: 5
+[2024-05-30 02:27:23,542][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_290448489a06c6a2dc62e82491212444bd6e341f, Message: stack expects a non-empty TensorList, Request Duration: 0.282s, Attempt: 3
+[2024-05-30 02:27:23,591][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_5963f5b45919a815eb139134b57efb530fe7f634, Message: stack expects a non-empty TensorList, Request Duration: 0.151s, Attempt: 3
+[2024-05-30 02:27:23,611][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_793fb87490c33b038af1310868c64bf55928478f, Message: stack expects a non-empty TensorList, Request Duration: 0.141s, Attempt: 4
+[2024-05-30 02:27:23,677][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_290448489a06c6a2dc62e82491212444bd6e341f, Message: stack expects a non-empty TensorList, Request Duration: 0.134s, Attempt: 4
+[2024-05-30 02:27:23,733][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_5963f5b45919a815eb139134b57efb530fe7f634, Message: stack expects a non-empty TensorList, Request Duration: 0.141s, Attempt: 4
+[2024-05-30 02:27:23,750][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_2_793fb87490c33b038af1310868c64bf55928478f, Message: stack expects a non-empty TensorList, Request Duration: 0.138s, Attempt: 5
+[2024-05-30 02:27:23,818][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_3_290448489a06c6a2dc62e82491212444bd6e341f, Message: stack expects a non-empty TensorList, Request Duration: 0.139s, Attempt: 5
+[2024-05-30 02:27:23,838][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_11fd738ace3929ae4d60c6cb956d66113a1382aa, Message: stack expects a non-empty TensorList, Request Duration: 0.359s, Attempt: 1
+[2024-05-30 02:27:23,875][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_4_5963f5b45919a815eb139134b57efb530fe7f634, Message: stack expects a non-empty TensorList, Request Duration: 0.141s, Attempt: 5
+[2024-05-30 02:27:24,081][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_43095da636f8f89ffb3c77322c35f66b828ad2bb, Message: stack expects a non-empty TensorList, Request Duration: 0.330s, Attempt: 1
+[2024-05-30 02:27:24,109][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_11fd738ace3929ae4d60c6cb956d66113a1382aa, Message: stack expects a non-empty TensorList, Request Duration: 0.270s, Attempt: 2
+[2024-05-30 02:27:24,140][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_259fe583ddd64df1efa6b2cbf7a1afae427cfa5d, Message: stack expects a non-empty TensorList, Request Duration: 0.320s, Attempt: 1
+[2024-05-30 02:27:24,166][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_f0a4acfc86dfa0637e085abf0bbaef7bd0ec5aa4, Message: stack expects a non-empty TensorList, Request Duration: 0.290s, Attempt: 1
+[2024-05-30 02:27:24,231][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_11fd738ace3929ae4d60c6cb956d66113a1382aa, Message: stack expects a non-empty TensorList, Request Duration: 0.121s, Attempt: 3
+[2024-05-30 02:27:24,241][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_43095da636f8f89ffb3c77322c35f66b828ad2bb, Message: stack expects a non-empty TensorList, Request Duration: 0.158s, Attempt: 2
+[2024-05-30 02:27:24,345][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_259fe583ddd64df1efa6b2cbf7a1afae427cfa5d, Message: stack expects a non-empty TensorList, Request Duration: 0.205s, Attempt: 2
+[2024-05-30 02:27:24,368][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_11fd738ace3929ae4d60c6cb956d66113a1382aa, Message: stack expects a non-empty TensorList, Request Duration: 0.136s, Attempt: 4
+[2024-05-30 02:27:24,391][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_43095da636f8f89ffb3c77322c35f66b828ad2bb, Message: stack expects a non-empty TensorList, Request Duration: 0.149s, Attempt: 3
+[2024-05-30 02:27:24,395][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_f0a4acfc86dfa0637e085abf0bbaef7bd0ec5aa4, Message: stack expects a non-empty TensorList, Request Duration: 0.228s, Attempt: 2
+[2024-05-30 02:27:24,478][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_259fe583ddd64df1efa6b2cbf7a1afae427cfa5d, Message: stack expects a non-empty TensorList, Request Duration: 0.131s, Attempt: 3
+[2024-05-30 02:27:24,502][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_7_11fd738ace3929ae4d60c6cb956d66113a1382aa, Message: stack expects a non-empty TensorList, Request Duration: 0.132s, Attempt: 5
+[2024-05-30 02:27:24,538][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_f0a4acfc86dfa0637e085abf0bbaef7bd0ec5aa4, Message: stack expects a non-empty TensorList, Request Duration: 0.142s, Attempt: 3
+[2024-05-30 02:27:24,539][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_43095da636f8f89ffb3c77322c35f66b828ad2bb, Message: stack expects a non-empty TensorList, Request Duration: 0.147s, Attempt: 4
+[2024-05-30 02:27:24,612][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_259fe583ddd64df1efa6b2cbf7a1afae427cfa5d, Message: stack expects a non-empty TensorList, Request Duration: 0.135s, Attempt: 4
+[2024-05-30 02:27:24,675][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_8_43095da636f8f89ffb3c77322c35f66b828ad2bb, Message: stack expects a non-empty TensorList, Request Duration: 0.132s, Attempt: 5
+[2024-05-30 02:27:24,683][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_f0a4acfc86dfa0637e085abf0bbaef7bd0ec5aa4, Message: stack expects a non-empty TensorList, Request Duration: 0.145s, Attempt: 4
+[2024-05-30 02:27:24,742][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_9_259fe583ddd64df1efa6b2cbf7a1afae427cfa5d, Message: stack expects a non-empty TensorList, Request Duration: 0.129s, Attempt: 5
+[2024-05-30 02:27:24,813][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_10_f0a4acfc86dfa0637e085abf0bbaef7bd0ec5aa4, Message: stack expects a non-empty TensorList, Request Duration: 0.129s, Attempt: 5
+[2024-05-30 02:27:24,907][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_442bdc9a0e80132c626a3605e010b8fb0ee0c1f6, Message: stack expects a non-empty TensorList, Request Duration: 0.405s, Attempt: 1
+[2024-05-30 02:27:25,103][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_442bdc9a0e80132c626a3605e010b8fb0ee0c1f6, Message: stack expects a non-empty TensorList, Request Duration: 0.195s, Attempt: 2
+[2024-05-30 02:27:25,159][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_f161352bf65f5538c0f15d5951d7f07b930d1094, Message: stack expects a non-empty TensorList, Request Duration: 0.415s, Attempt: 1
+[2024-05-30 02:27:25,202][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_8d163d76c569f509002af1a489436be60492eb8e, Message: stack expects a non-empty TensorList, Request Duration: 0.525s, Attempt: 1
+[2024-05-30 02:27:25,210][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_f58488d89546773dc573388dc1f754b42b49b026, Message: stack expects a non-empty TensorList, Request Duration: 0.395s, Attempt: 1
+[2024-05-30 02:27:25,244][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_442bdc9a0e80132c626a3605e010b8fb0ee0c1f6, Message: stack expects a non-empty TensorList, Request Duration: 0.140s, Attempt: 3
+[2024-05-30 02:27:25,296][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_f161352bf65f5538c0f15d5951d7f07b930d1094, Message: stack expects a non-empty TensorList, Request Duration: 0.136s, Attempt: 2
+[2024-05-30 02:27:25,385][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_8d163d76c569f509002af1a489436be60492eb8e, Message: stack expects a non-empty TensorList, Request Duration: 0.182s, Attempt: 2
+[2024-05-30 02:27:25,417][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_442bdc9a0e80132c626a3605e010b8fb0ee0c1f6, Message: stack expects a non-empty TensorList, Request Duration: 0.172s, Attempt: 4
+[2024-05-30 02:27:25,422][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_f58488d89546773dc573388dc1f754b42b49b026, Message: stack expects a non-empty TensorList, Request Duration: 0.212s, Attempt: 2
+[2024-05-30 02:27:25,433][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_f161352bf65f5538c0f15d5951d7f07b930d1094, Message: stack expects a non-empty TensorList, Request Duration: 0.137s, Attempt: 3
+[2024-05-30 02:27:25,565][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_11_442bdc9a0e80132c626a3605e010b8fb0ee0c1f6, Message: stack expects a non-empty TensorList, Request Duration: 0.148s, Attempt: 5
+[2024-05-30 02:27:25,568][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_f58488d89546773dc573388dc1f754b42b49b026, Message: stack expects a non-empty TensorList, Request Duration: 0.145s, Attempt: 3
+[2024-05-30 02:27:25,593][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_f161352bf65f5538c0f15d5951d7f07b930d1094, Message: stack expects a non-empty TensorList, Request Duration: 0.159s, Attempt: 4
+[2024-05-30 02:27:25,704][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_8d163d76c569f509002af1a489436be60492eb8e, Message: stack expects a non-empty TensorList, Request Duration: 0.318s, Attempt: 3
+[2024-05-30 02:27:25,714][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_14_f58488d89546773dc573388dc1f754b42b49b026, Message: stack expects a non-empty TensorList, Request Duration: 0.138s, Attempt: 4
+[2024-05-30 02:27:25,730][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_13_f161352bf65f5538c0f15d5951d7f07b930d1094, Message: stack expects a non-empty TensorList, Request Duration: 0.136s, Attempt: 5
+[2024-05-30 02:27:25,791][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_15_e83f7664870c1105727dd99353d0bfa01b2450b5, Message: stack expects a non-empty TensorList, Request Duration: 0.222s, Attempt: 1
+[2024-05-30 02:27:25,853][SUPER][INFO] -  Failed to cache  Batch_Id: 1_1_12_8d163d76c569f509002af1a489436be60492eb8e, Message: stack expects a non-empty TensorList, Request Duration: 0.147s, Attempt: 4
+[2024-05-30 17:09:32,229][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 17:09:33,648][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-30 17:09:33,649][SUPER][INFO] - Running in simualtion mode
+[2024-05-30 17:09:33,650][SUPER][INFO] - Data loading workers started
+[2024-05-30 17:09:51,553][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 17:18:22,645][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 17:18:24,038][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-30 17:18:24,039][SUPER][INFO] - Running in simualtion mode
+[2024-05-30 17:18:24,040][SUPER][INFO] - Data loading workers started
+[2024-05-30 17:18:48,189][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 17:28:29,243][SUPER][INFO] - Starting SUPER Datloading Service
+[2024-05-30 17:28:30,578][SUPER][INFO] - Dataset Confirmed. Data Dir: s3://owtchunks/train/, Files: 2286, Batches: 2286, Partitions: 1
+[2024-05-30 17:28:30,579][SUPER][INFO] - Running in simualtion mode
+[2024-05-30 17:28:30,580][SUPER][INFO] - Data loading workers started
+[2024-05-30 17:28:33,323][SUPER][INFO] - Server started. Listening on port 50051...
+[2024-05-30 17:47:02,331][SUPER][INFO] - New job with id '182996' successfully registered.
+[2024-05-30 17:47:18,721][SUPER][INFO] - Average time interval between requests: 2.2976 seconds
+[2024-05-30 17:48:11,017][SUPER][INFO] - New job with id '184971' successfully registered.
+[2024-05-30 17:49:57,317][SUPER][INFO] - New job with id '186748' successfully registered.
+[2024-05-30 17:50:51,465][SUPER][INFO] - New job with id '187763' successfully registered.
+[2024-05-30 17:51:47,458][SUPER][INFO] - New job with id '188889' successfully registered.
+[2024-05-30 17:52:44,198][SUPER][INFO] - New job with id '190018' successfully registered.
+[2024-05-30 17:54:37,272][SUPER][INFO] - New job with id '191338' successfully registered.
+[2024-05-30 17:55:38,381][SUPER][INFO] - New job with id '192437' successfully registered.
+[2024-05-30 17:57:12,000][SUPER][INFO] - New job with id '193697' successfully registered.
+[2024-05-30 18:02:08,535][SUPER][INFO] - New job with id '196506' successfully registered.
+[2024-05-30 18:05:09,219][SUPER][INFO] - New job with id '198459' successfully registered.
+[2024-05-30 18:06:01,309][SUPER][INFO] - New job with id '199431' successfully registered.
+[2024-05-30 18:15:39,416][SUPER][INFO] - New job with id '204902' successfully registered.
+[2024-05-30 18:17:53,257][SUPER][INFO] - New job with id '207434' successfully registered.
+[2024-05-30 18:19:56,747][SUPER][INFO] - Average time interval between requests: 121.0547 seconds
