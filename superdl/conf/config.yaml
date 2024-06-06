@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - workload: vision #language, vision
+  - workload: language #language, vision
   # - override hydra/hydra_logging: disabled  
   # - override hydra/job_logging: disabled
 
