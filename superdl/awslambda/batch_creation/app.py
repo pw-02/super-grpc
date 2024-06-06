@@ -243,7 +243,6 @@ def is_image_file(path: str):
 
 def transform(bucket_name):
 
-
     if 'imagenet1k-sdl' in bucket_name:
         normalize = transforms.Normalize(
             mean=[0.485, 0.456, 0.406], 

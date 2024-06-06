@@ -37,7 +37,7 @@ if __name__ == "__main__":
         redis_client = redis.StrictRedis(host=redis_host, port=redis_port)
     
     # Total upload size
-    total_upload_size_gb = 300  # Total upload size in GB
+    total_upload_size_gb = 200  # Total upload size in GB
     total_upload_size_mb = total_upload_size_gb * 1024  # Convert GB to MBls
     
     # List of file sizes to upload (in MB)
